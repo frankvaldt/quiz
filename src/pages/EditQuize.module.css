@@ -1,0 +1,13 @@
+.wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5%;
+}
+
+.add_icon{
+    align-self: end;
+    cursor: pointer;
+    color: #3A7734;
+    transform: scale(1.5);
+}

@@ -1,0 +1,15 @@
+.remove{
+    color: red;
+    cursor: pointer;
+    transform: scale(1.5);
+}
+
+.remove:hover{
+    color: #9C1A1C;
+    transition: 2s;
+}
+.button_wrapper{
+    display: flex;
+    align-items: center;
+    grid-column-gap: 2%;
+}
