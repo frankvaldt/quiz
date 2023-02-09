@@ -1,19 +1,24 @@
-import React from "react";
+import React, {Dispatch, SetStateAction} from "react";
 import {Answer} from "./Answer";
 import {AddAnswer} from "./AddAnswer";
 import {Form} from "antd";
 import css from "./../../ModalQuiz.module.css";
+import {IAnswers, IQuizApi} from "../../../../api/quiz.api";
+import {uuid} from "../../../../utils/utils";
 
-export const AnswerContainer = (): JSX.Element => {
+export const AnswerContainer = (props: {
+    answers: IAnswers[];
+    setQuiz: Dispatch<SetStateAction<IQuizApi>>
+}): JSX.Element => {
+    const {answers, setQuiz} = props;
     return (
         <>
-            <Form.Item label="Answers" >
+            {answers.length > 0 && (<Form.Item label="Answers">
                 <div className={css.answer_container}>
-                    <Answer text={'lol'} isCorrect={false}/>
-                    <Answer text={'kek'} isCorrect={true}/>
+                    {answers.map(answer => <Answer key={uuid()} text={answer.text} isCorrect={answer.isCorrect}/>)}
                 </div>
-            </Form.Item>
-            <AddAnswer/>
+            </Form.Item>)}
+            <AddAnswer setQuiz={setQuiz}/>
         </>
     );
 }

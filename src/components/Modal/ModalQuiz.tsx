@@ -35,7 +35,7 @@ export const ModalQuiz = (props: {
             </div>
             <Modal
                 open={open}
-                title="Title"
+                title={title}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 footer={<ModalFooter handleCancel={handleCancel} loading={loading} handleOk={handleOk}/>}

@@ -1,5 +1,6 @@
 import React from "react";
 import {Button} from "antd";
+import {CloseCircleOutlined} from "@ant-design/icons";
 
 export const Answer = (props: {
     text: string;
@@ -8,8 +9,11 @@ export const Answer = (props: {
     const {text, isCorrect} = props;
     const color = isCorrect ? 'red' : 'green';
     return (
-        <Button style={{color: color, borderColor: color}}>
-            {text}
-        </Button>
+        <>
+            <Button style={{color: color, borderColor: color}}>
+                {text}
+                 <CloseCircleOutlined/>
+            </Button>
+        </>
     );
 }
