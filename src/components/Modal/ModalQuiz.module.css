@@ -1,15 +1,76 @@
-.remove{
+.remove {
     color: red;
     cursor: pointer;
     transform: scale(1.5);
 }
 
-.remove:hover{
+.remove:hover {
     color: #9C1A1C;
     transition: 2s;
 }
-.button_wrapper{
+
+.add {
+    color: green;
+    cursor: pointer;
+    transform: scale(1.5);
+}
+
+.button_wrapper {
     display: flex;
     align-items: center;
     grid-column-gap: 2%;
+}
+
+.remove_container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+
+.question_wrapper {
+    margin-bottom: 2%;
+}
+
+.icon_wrapper {
+    display: flex;
+    align-items: center;
+    padding-right: 20px;
+    justify-content: space-between;
+    padding-left: 20px;
+    margin-bottom: 10px;
+}
+
+.icon_wrapper > span {
+    height: 30px;
+    transform: scale(1.5);
+    cursor: pointer;
+}
+
+.icon {
+    color: #1677ff;
+}
+
+.add_icon {
+    color: #3A7734;
+    transform: scale(1.5);
+    cursor: pointer;
+}
+
+.input {
+    width: 60%;
+}
+
+.answer_wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    column-gap: 5%;
+}
+
+.answer_container {
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
 }

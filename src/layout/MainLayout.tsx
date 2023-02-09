@@ -1,5 +1,5 @@
 import {Layout} from "antd";
-import {Content, Footer, Header} from "antd/es/layout/layout";
+import {Content, Header} from "antd/es/layout/layout";
 import React from "react";
 import css from "./MainLayout.module.css";
 import { Outlet } from 'react-router-dom';
@@ -17,7 +17,6 @@ export const MainLayout = () => {
             </div>
         </Content>
       </Layout>
-      <Footer>Footer</Footer>
     </Layout>
   );
 }
