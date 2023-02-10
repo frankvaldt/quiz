@@ -8,3 +8,7 @@ export const uuid = (): string =>
 export const checkSpacesString = (str: string): boolean => {
   return new RegExp(/^\s+$/).test(str) || !str || str.length === 0;
 };
+
+export const isOnlyNumbers = (str: string): boolean => {
+  return new RegExp(/^[0-9]*$/).test(str);
+};

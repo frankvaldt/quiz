@@ -2,8 +2,12 @@ import React, {useState} from "react";
 import css from '../ModalQuiz.module.css';
 import {EditOutlined, PlusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import {Question} from "./question/Question";
+import {IQuizApi} from "../../../api/quiz.api";
 
-export const ModalBody = (): JSX.Element => {
+export const ModalBody = (props: {
+    quiz: IQuizApi[]
+}): JSX.Element => {
+    const {quiz} = props;
     const [componentDisabled, setComponentDisabled] = useState<boolean>(true);
 
     return (
@@ -12,8 +16,10 @@ export const ModalBody = (): JSX.Element => {
                 <PlusCircleOutlined className={css.add}/>
                 <EditOutlined className={`${!componentDisabled && css.icon}`}/>
             </div>
-            <Question componentDisabled={componentDisabled} setComponentDisabled={setComponentDisabled}/>
-            <Question componentDisabled={componentDisabled} setComponentDisabled={setComponentDisabled}/>
+            {quiz.map(quizElem => <Question quizElem={quizElem}
+                                            componentDisabled={componentDisabled}
+                                            setComponentDisabled={setComponentDisabled}/>)}
+
         </>
     );
 }

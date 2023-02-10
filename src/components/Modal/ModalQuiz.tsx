@@ -5,11 +5,13 @@ import {ModalFooter} from "./ModalFooter/ModalFooter";
 import {ModalBody} from "./ModalBody/ModalBody";
 import {DeleteOutlined} from "@ant-design/icons";
 import css from './ModalQuiz.module.css';
+import {IQuizApi} from "../../api/quiz.api";
 
 export const ModalQuiz = (props: {
     title: string;
+    quiz: IQuizApi[];
 }): JSX.Element => {
-    const {title} = props;
+    const {title, quiz} = props;
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const showModal = () => {
@@ -34,13 +36,15 @@ export const ModalQuiz = (props: {
                 <DeleteOutlined className={css.remove}/>
             </div>
             <Modal
+                className={css.modal}
                 open={open}
+                width={'60%'}
                 title={title}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 footer={<ModalFooter handleCancel={handleCancel} loading={loading} handleOk={handleOk}/>}
             >
-                <ModalBody/>
+                <ModalBody quiz={quiz}/>
             </Modal>
         </>
     );

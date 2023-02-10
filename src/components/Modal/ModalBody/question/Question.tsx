@@ -4,6 +4,7 @@ import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
 import css from '../../ModalQuiz.module.css';
 import {AnswerContainer} from "../answer/AnswerContainer";
 import {IAnswers, IQuizApi} from "../../../../api/quiz.api";
+import {isOnlyNumbers} from "../../../../utils/utils";
 
 const initQuiz: IQuizApi = {
     answers: [] as IAnswers[],
@@ -16,9 +17,10 @@ const initQuiz: IQuizApi = {
 export const Question = (props: {
     setComponentDisabled: (a: boolean) => void;
     componentDisabled: boolean;
+    quizElem: IQuizApi;
 }): JSX.Element => {
-    const {componentDisabled, setComponentDisabled} = props;
-    const [quiz, setQuiz] = useState<IQuizApi>(initQuiz);
+    const {componentDisabled, setComponentDisabled, quizElem} = props;
+    const [quiz, setQuiz] = useState<IQuizApi>(quizElem ?? initQuiz);
     const onFormLayoutChange = ({disabled}: { disabled: boolean }) => {
         setComponentDisabled(disabled);
     };
@@ -32,8 +34,6 @@ export const Question = (props: {
     return (
         <Card className={css.question_wrapper}>
             <Form
-                labelCol={{span: 4}}
-                wrapperCol={{span: 14}}
                 layout="horizontal"
                 onValuesChange={onFormLayoutChange}
                 disabled={componentDisabled}
@@ -50,11 +50,17 @@ export const Question = (props: {
                     </Upload>
                 </Form.Item>
                 <Form.Item label="Enter a question" valuePropName="fileList">
-                    <Input name={"question"} value={quiz.question} placeholder="Write a question" onChange={onChangeQuiz}/>
+                    <Input name={"question"} value={quiz.question} placeholder="Write a question"
+                           onChange={onChangeQuiz}/>
                 </Form.Item>
-                <AnswerContainer answers={quiz.answers} setQuiz={setQuiz} />
-                <Form.Item label="Enter a timer value" valuePropName="fileList">
-                    <InputNumber name={"timer"}/>
+                <AnswerContainer answers={quiz.answers} setQuiz={setQuiz}/>
+                <Form.Item label="Enter a timer" valuePropName="fileList">
+                    <InputNumber min={0} value={quiz.timer}
+                                 onChange={(value) => {
+                                     if (value && isOnlyNumbers(value.toString())){
+                                         setQuiz((prevState => ({...prevState, timer: parseInt(value.toString())})))
+                                     }
+                                 }}/>
                 </Form.Item>
             </Form>
         </Card>

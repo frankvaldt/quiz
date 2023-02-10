@@ -15,7 +15,7 @@ export const AnswerContainer = (props: {
     return (
         <>
             {answers.length > 0 && (
-                <Form.Item label="Answers">
+                <Form.Item label="Answers" className={css.item}>
                     <div className={css.answer_container}>
                         {localAnswers.map(answer => <Answer key={uuid()} answer={answer}
                                                        setQuiz={setQuiz} setLocalAnswers={setLocalAnswers} />)}
