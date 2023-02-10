@@ -9,7 +9,8 @@ const initQuiz: IQuizApi = {
     answers: [] as IAnswers[],
     img: "",
     question: "",
-    timer: 0
+    timer: 0,
+    id: '',
 }
 
 export const Question = (props: {
@@ -21,6 +22,8 @@ export const Question = (props: {
     const onFormLayoutChange = ({disabled}: { disabled: boolean }) => {
         setComponentDisabled(disabled);
     };
+
+    console.log('quiz', quiz);
 
     const onChangeQuiz = (event: ChangeEvent<HTMLInputElement>) => {
         setQuiz(prevState => ({...prevState, [event.target.name]: event.target.value}));

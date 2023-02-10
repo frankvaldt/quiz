@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction} from "react";
+import React, {Dispatch, SetStateAction, useState} from "react";
 import {Answer} from "./Answer";
 import {AddAnswer} from "./AddAnswer";
 import {Form} from "antd";
@@ -11,14 +11,17 @@ export const AnswerContainer = (props: {
     setQuiz: Dispatch<SetStateAction<IQuizApi>>
 }): JSX.Element => {
     const {answers, setQuiz} = props;
+    const [localAnswers, setLocalAnswers] = useState(answers);
     return (
         <>
-            {answers.length > 0 && (<Form.Item label="Answers">
-                <div className={css.answer_container}>
-                    {answers.map(answer => <Answer key={uuid()} text={answer.text} isCorrect={answer.isCorrect}/>)}
-                </div>
-            </Form.Item>)}
-            <AddAnswer setQuiz={setQuiz}/>
+            {answers.length > 0 && (
+                <Form.Item label="Answers">
+                    <div className={css.answer_container}>
+                        {localAnswers.map(answer => <Answer key={uuid()} answer={answer}
+                                                       setQuiz={setQuiz} setLocalAnswers={setLocalAnswers} />)}
+                    </div>
+                </Form.Item>)}
+            <AddAnswer setLocalAnswers={setLocalAnswers} setQuiz={setQuiz}/>
         </>
     );
 }

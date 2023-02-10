@@ -1,6 +1,7 @@
 export interface IQuizGroup{
     title: string;
     quiz: IQuizApi[];
+    id: string;
 }
 
 export interface IQuizApi {
@@ -8,9 +9,11 @@ export interface IQuizApi {
     question: string;
     timer?: number;
     answers: IAnswers[];
+    id: string;
 }
 
 export interface IAnswers{
     text: string;
     isCorrect?: boolean;
+    id: string;
 }
