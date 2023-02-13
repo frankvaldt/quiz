@@ -1,4 +1,4 @@
-import React, {ChangeEvent, Dispatch, SetStateAction, useState} from "react";
+import React, {ChangeEvent, Dispatch, SetStateAction, useEffect, useState} from "react";
 import {Button, Input} from "antd";
 import Modal from "antd/es/modal/Modal";
 import {ModalFooter} from "./ModalFooter/ModalFooter";
@@ -17,6 +17,7 @@ export const ModalQuiz = (props: {
     const [loading, setLoading] = useState<boolean>(false);
     const [quiz, setQuiz] = useState<IQuizGroup>(quizGroup);
     const dispatch = useAppDispatch();
+
     const showModal = () => {
         setOpen(true);
     };
@@ -32,10 +33,11 @@ export const ModalQuiz = (props: {
     };
 
     const handelInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        dispatch(changeTitleQuizGroup({
-            id: quizGroup.id,
-            title: event.target.value
-        }));
+        setQuiz(prevState => ({...prevState, title: event.target.value}));
+        // dispatch(changeTitleQuizGroup({
+        //     id: quizGroup.id,
+        //     title: event.target.value
+        // }));
     };
 
     const handlerDeleteQuizGroup = () => {
@@ -58,7 +60,7 @@ export const ModalQuiz = (props: {
                 onCancel={handleCancel}
                 footer={<ModalFooter handleCancel={handleCancel} loading={loading} handleOk={handleOk}/>}
             >
-                <ModalBody quizGroup={quiz}/>
+                <ModalBody quizGroup={quiz} setQuiz={setQuiz}/>
             </Modal>
         </>
     );

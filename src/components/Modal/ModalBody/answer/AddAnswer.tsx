@@ -1,15 +1,15 @@
-import React, {ChangeEvent, Dispatch, SetStateAction, useState} from "react";
+import React, {ChangeEvent, Dispatch, SetStateAction, useCallback, useState} from "react";
 import {PlusCircleOutlined} from "@ant-design/icons";
 import css from "../../ModalQuiz.module.css";
-import {Button, Checkbox, Form, Input} from "antd";
-import {IAnswers, IQuizApi} from "../../../../api/quiz.api";
+import {Checkbox, Form, Input} from "antd";
+import {IQuizApi, IQuizGroup} from "../../../../api/quiz.api";
 import {checkSpacesString, uuid} from "../../../../utils/utils";
 
 export const AddAnswer = (props: {
-    setQuiz: Dispatch<SetStateAction<IQuizApi>>
-    setLocalAnswers: Dispatch<SetStateAction<IAnswers[]>>
+    quizElem: IQuizApi;
+    setQuiz: Dispatch<SetStateAction<IQuizGroup>>;
 }): JSX.Element => {
-    const {setQuiz, setLocalAnswers} = props;
+    const {setQuiz, quizElem} = props;
     const [inputAnswer, setInputAnswer] = useState<string>('');
     const [isTrue, setIsTrue] = useState<boolean>(false);
     const handlerInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -17,13 +17,24 @@ export const AddAnswer = (props: {
         setInputAnswer(inputValue);
     };
 
+    const addAnswers = useCallback(() => {
+        setQuiz(prevState => {
+            const index = prevState.quiz.findIndex(elem => elem.id === quizElem.id);
+            if (index === -1) return prevState;
+            return {
+                ...prevState, quiz: [...prevState.quiz.slice(0, index),
+                    {
+                        ...prevState.quiz[index], answers: [...prevState.quiz[index].answers,
+                            {text: inputAnswer.trim(), isCorrect: isTrue, id: uuid()}]
+                    },
+                    ...prevState.quiz.slice(index + 1)]
+            };
+        });
+    }, [inputAnswer, isTrue]);
+
     const addAnswer = () => {
         if (!checkSpacesString(inputAnswer)) {
-            setLocalAnswers(prevState => [...prevState, {text: inputAnswer.trim(), isCorrect: !isTrue, id: uuid()}]);
-            setQuiz((prevState) => ({
-                ...prevState,
-                answers: [...prevState.answers, {text: inputAnswer.trim(), isCorrect: !isTrue, id: uuid()}]
-            }));
+          addAnswers();
         }
     };
     return (

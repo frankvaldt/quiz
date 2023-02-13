@@ -26,7 +26,7 @@ export const EditQuiz = (): JSX.Element => {
     return (
         <div className={css.wrapper}>
             <div className={css.add_icon}><PlusSquareTwoTone/></div>
-            {quizGroup.map((quiz) =>
+            {quizGroupFromState.map((quiz) =>
                 <div key={uuid()}>
                     <ModalQuiz quizGroup={quiz}/>
                 </div>)}

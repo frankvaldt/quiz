@@ -1,11 +1,12 @@
-import React, {ChangeEvent, useState} from "react";
+import React, {ChangeEvent, Dispatch, SetStateAction, useCallback, useState} from "react";
 import {Card, Form, Input, InputNumber, Upload} from "antd";
 import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
 import css from '../../ModalQuiz.module.css';
-import {IAnswers, IQuizApi} from "../../../../api/quiz.api";
+import {IAnswers, IQuizApi, IQuizGroup} from "../../../../api/quiz.api";
 import {isOnlyNumbers} from "../../../../utils/utils";
-import {useAppDispatch, useAppSelector} from "../../../../hooks/reduxHooks";
-import {deleteQuiz, changeQuestion} from "../../../../store/slices/quizGropSlice";
+import {useAppDispatch} from "../../../../hooks/reduxHooks";
+import {deleteQuiz} from "../../../../store/slices/quizGropSlice";
+import {AnswerContainer} from "../answer/AnswerContainer";
 
 const initQuiz: IQuizApi = {
     answers: [] as IAnswers[],
@@ -20,12 +21,12 @@ export const Question = (props: {
     componentDisabled: boolean;
     quizElem: IQuizApi;
     id: string;
+    setQuiz: Dispatch<SetStateAction<IQuizGroup>>;
 }): JSX.Element => {
-    const quizGroupFromState = useAppSelector(state => state.quizGrop.quizGrop);
-    const {componentDisabled, setComponentDisabled, id, quizElem} = props;
-    const [tempState, setTempState] = useState(quizElem ?? initQuiz);
+    const {componentDisabled, setComponentDisabled, id, quizElem, setQuiz} = props;
     const dispatch = useAppDispatch();
-
+    const [input, setInput] = useState<string>(quizElem.question ?? '');
+    const [inputNumber, setInputNumber] = useState<number>(quizElem.timer ?? 0);
     const handelDeleteQuiz = () => {
         dispatch(deleteQuiz({id: id, idQuiz: quizElem.id}));
     };
@@ -33,11 +34,33 @@ export const Question = (props: {
     const onFormLayoutChange = ({disabled}: { disabled: boolean }) => {
         setComponentDisabled(disabled);
     };
-
-    const onChangeQuiz = (event: ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value;
-        dispatch(changeQuestion({id: id, idQuiz: quizElem.id, text: value.toString()}))
+    const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setInput(event.target.value)
     };
+
+    const onBlurInput = useCallback(() => {
+        setQuiz(prevState => {
+            const index = prevState.quiz.findIndex(elem => elem.id === quizElem.id);
+            if (index === -1) return prevState;
+            return {
+                ...prevState, quiz: [...prevState.quiz.slice(0, index),
+                    {...prevState.quiz[index], question: input},
+                    ...prevState.quiz.slice(index + 1)]
+            };
+        });
+    }, [input]);
+
+    const onBlurInputNumber = useCallback(() => {
+        setQuiz(prevState => {
+            const index = prevState.quiz.findIndex(elem => elem.id === quizElem.id);
+            if (index === -1) return prevState;
+            return {
+                ...prevState, quiz: [...prevState.quiz.slice(0, index),
+                    {...prevState.quiz[index], timer: inputNumber},
+                    ...prevState.quiz.slice(index + 1)]
+            };
+        });
+    }, [inputNumber]);
 
     return (
         <Card className={css.question_wrapper}>
@@ -58,18 +81,15 @@ export const Question = (props: {
                     </Upload>
                 </Form.Item>
                 <Form.Item label="Enter a question" valuePropName="fileList">
-                    <Input name={"question"} value={tempState.question} placeholder="Write a question"
-                           onChange={onChangeQuiz}/>
+                    <Input name={"question"} value={input} onBlur={onBlurInput} placeholder="Write a question"
+                           onChange={onChange}/>
                 </Form.Item>
-                {/*<AnswerContainer answers={quizElem.answers} setQuiz={setLocalQuiz}/>*/}
+                <AnswerContainer quizElem={quizElem} answers={quizElem.answers} setQuiz={setQuiz}/>
                 <Form.Item label="Enter a timer" valuePropName="fileList">
-                    <InputNumber min={0} value={tempState.timer}
+                    <InputNumber min={0} value={inputNumber} onBlur={onBlurInputNumber}
                                  onChange={(value) => {
                                      if (value && isOnlyNumbers(value.toString())) {
-                                         setTempState((prevState => ({
-                                             ...prevState,
-                                             timer: parseInt(value.toString())
-                                         })))
+                                         setInputNumber(parseInt(value.toString()));
                                      }
                                  }}/>
                 </Form.Item>
