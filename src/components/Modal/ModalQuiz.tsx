@@ -1,19 +1,22 @@
-import React, {useState} from "react";
-import {Button} from "antd";
+import React, {ChangeEvent, Dispatch, SetStateAction, useState} from "react";
+import {Button, Input} from "antd";
 import Modal from "antd/es/modal/Modal";
 import {ModalFooter} from "./ModalFooter/ModalFooter";
 import {ModalBody} from "./ModalBody/ModalBody";
 import {DeleteOutlined} from "@ant-design/icons";
 import css from './ModalQuiz.module.css';
-import {IQuizApi} from "../../api/quiz.api";
+import {IQuizGroup} from "../../api/quiz.api";
+import {useAppDispatch} from "../../hooks/reduxHooks";
+import {changeTitleQuizGroup, removeQuizGroup} from "../../store/slices/quizGropSlice";
 
 export const ModalQuiz = (props: {
-    title: string;
-    quiz: IQuizApi[];
+    quizGroup: IQuizGroup;
 }): JSX.Element => {
-    const {title, quiz} = props;
-    const [loading, setLoading] = useState(false);
-    const [open, setOpen] = useState(false);
+    const {quizGroup} = props;
+    const [open, setOpen] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [quiz, setQuiz] = useState<IQuizGroup>(quizGroup);
+    const dispatch = useAppDispatch();
     const showModal = () => {
         setOpen(true);
     };
@@ -27,24 +30,35 @@ export const ModalQuiz = (props: {
             setOpen(false);
         }, 3000);
     };
+
+    const handelInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        dispatch(changeTitleQuizGroup({
+            id: quizGroup.id,
+            title: event.target.value
+        }));
+    };
+
+    const handlerDeleteQuizGroup = () => {
+        dispatch(removeQuizGroup(quizGroup.id));
+    }
     return (
         <>
             <div className={css.button_wrapper}>
                 <Button type="primary" onClick={showModal}>
-                    {title}
+                    {quiz.title}
                 </Button>
-                <DeleteOutlined className={css.remove}/>
+                <DeleteOutlined onClick={handlerDeleteQuizGroup} className={css.remove}/>
             </div>
             <Modal
                 className={css.modal}
                 open={open}
                 width={'60%'}
-                title={title}
+                title={<Input bordered={false} onChange={handelInputChange} value={quiz.title}/>}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 footer={<ModalFooter handleCancel={handleCancel} loading={loading} handleOk={handleOk}/>}
             >
-                <ModalBody quiz={quiz}/>
+                <ModalBody quizGroup={quiz}/>
             </Modal>
         </>
     );

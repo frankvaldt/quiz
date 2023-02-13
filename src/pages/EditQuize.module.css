@@ -3,6 +3,8 @@
     flex-direction: column;
     justify-content: center;
     padding: 5%;
+    column-gap: 20px;
+    row-gap: 30px;
 }
 
 .add_icon{
@@ -10,4 +12,8 @@
     cursor: pointer;
     color: #3A7734;
     transform: scale(1.5);
+}
+
+.main_wrapper{
+
 }
