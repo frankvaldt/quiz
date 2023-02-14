@@ -9,9 +9,9 @@ import {uuid} from "../../../../utils/utils";
 export const AnswerContainer = (props: {
     quizElem: IQuiz;
     answers: IAnswers[];
-    setQuiz: Dispatch<SetStateAction<IQuizGroup>>;
+    setQuestion: Dispatch<SetStateAction<IQuiz>>;
 }): JSX.Element => {
-    const {answers, setQuiz, quizElem} = props;
+    const {answers, setQuestion, quizElem} = props;
 
     return (
         <>
@@ -20,10 +20,10 @@ export const AnswerContainer = (props: {
                     <div className={css.answer_container}>
                         {answers.map(answer => <Answer key={uuid()} answer={answer}
                                                        quizElem={quizElem}
-                                                       setQuiz={setQuiz}/>)}
+                                                       setQuestion={setQuestion}/>)}
                     </div>
                 </Form.Item>)}
-            <AddAnswer setQuiz={setQuiz} quizElem={quizElem}/>
+            <AddAnswer setQuestion={setQuestion} quizElem={quizElem}/>
         </>
     );
 }

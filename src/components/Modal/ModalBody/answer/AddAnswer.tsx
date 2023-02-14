@@ -7,9 +7,9 @@ import {checkSpacesString, uuid} from "../../../../utils/utils";
 
 export const AddAnswer = (props: {
     quizElem: IQuiz;
-    setQuiz: Dispatch<SetStateAction<IQuizGroup>>;
+    setQuestion: Dispatch<SetStateAction<IQuiz>>;
 }): JSX.Element => {
-    const {setQuiz, quizElem} = props;
+    const {setQuestion, quizElem} = props;
     const [inputAnswer, setInputAnswer] = useState<string>('');
     const [isTrue, setIsTrue] = useState<boolean>(false);
     const handlerInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -18,23 +18,15 @@ export const AddAnswer = (props: {
     };
 
     const addAnswers = useCallback(() => {
-        setQuiz(prevState => {
-            const index = prevState.quiz.findIndex(elem => elem.id === quizElem.id);
-            if (index === -1) return prevState;
-            return {
-                ...prevState, quiz: [...prevState.quiz.slice(0, index),
-                    {
-                        ...prevState.quiz[index], answers: [...prevState.quiz[index].answers,
-                            {text: inputAnswer.trim(), isCorrect: isTrue, id: uuid(), idQuiz: prevState.quiz[index].id}]
-                    },
-                    ...prevState.quiz.slice(index + 1)]
-            };
-        });
+        setQuestion(prevState => ({
+            ...prevState, answers: [...prevState.answers,
+                {text: inputAnswer.trim(), isCorrect: isTrue, id: uuid(), idQuiz: quizElem.id}]
+        }));
     }, [inputAnswer, isTrue]);
 
     const addAnswer = () => {
         if (!checkSpacesString(inputAnswer)) {
-          addAnswers();
+            addAnswers();
         }
     };
     return (

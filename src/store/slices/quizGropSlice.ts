@@ -23,11 +23,8 @@ const quizGropSlice = createSlice({
         addQuizGroup: (state, action: PayloadAction<IQuizGroup>) => {
             state.quizGrop.push(action.payload);
         },
-        changeTitleQuizGroup: (state, action: PayloadAction<{ id: string, title: string }>) => {
-            const {id, title} = action.payload;
-            const group = state.quizGrop.find(elem => elem.id === id);
-            if (!group) return;
-            group.title = title;
+        addToStartGroup: (state, action: PayloadAction<IQuizGroup>) => {
+            state.quizGrop.unshift(action.payload);
         },
         removeQuizGroup: (state, action: PayloadAction<string>) => {
             state.quizGrop = state.quizGrop.filter(elem => elem.id !== action.payload);
@@ -35,6 +32,16 @@ const quizGropSlice = createSlice({
         changeQuizGroup: (state, action: PayloadAction<IQuizGroup>) => {
             const index = state.quizGrop.findIndex(elem => elem.id === action.payload.id);
             state.quizGrop.splice(index, 1, action.payload);
+        },
+        addQuestion: (state, action: PayloadAction<{ id: string, quiz: IQuiz }>) => {
+            const group = state.quizGrop.find(elem => elem.id === action.payload.id);
+            if (!group) return;
+            group.quiz.push(action.payload.quiz);
+        },
+        addQuestionToStart: (state, action: PayloadAction<{ id: string, quiz: IQuiz }>) => {
+            const group = state.quizGrop.find(elem => elem.id === action.payload.id);
+            if (!group) return;
+            group.quiz.unshift(action.payload.quiz);
         },
         changeAllQuiz: (state, action: PayloadAction<{ id: string, quiz: IQuiz[] }>) => {
             const group = state.quizGrop.find(elem => elem.id === action.payload.id);
@@ -67,14 +74,15 @@ const quizGropSlice = createSlice({
 
 export const {
     setQuizGroups,
-    changeTitleQuizGroup,
     addQuizGroup,
     removeQuizGroup,
     changeAllQuiz,
     changeOneQuiz,
+    addQuestion,
     deleteQuiz,
     changeQuizGroup,
-    changeQuestion
+    addToStartGroup,
+    addQuestionToStart
 } = quizGropSlice.actions;
 
 export default quizGropSlice.reducer;

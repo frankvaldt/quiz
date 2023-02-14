@@ -17,6 +17,7 @@ const initQuizGrop: IQuizGroup = {
 export const EditQuiz = (): JSX.Element => {
     const quizGroupFromState = useAppSelector(state => state.quizGrop.quizGrop);
     const [open, setOpen] = useState<boolean>(false);
+    console.log('quizGroupFromState', quizGroupFromState);
     const dispatch = useAppDispatch();
     useEffect(() => {
         dispatch(setQuizGroups(quizGroups));

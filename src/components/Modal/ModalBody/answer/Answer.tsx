@@ -6,25 +6,17 @@ import {IAnswers, IQuiz, IQuizGroup} from "../../../../api/quiz.api";
 export const Answer = (props: {
     answer: IAnswers;
     quizElem: IQuiz;
-    setQuiz: Dispatch<SetStateAction<IQuizGroup>>
+    setQuestion: Dispatch<SetStateAction<IQuiz>>;
 }): JSX.Element => {
-    const {answer, setQuiz, quizElem} = props;
+    const {answer, setQuestion, quizElem} = props;
     const {id, text, isCorrect} = answer;
-    const color = !isCorrect ? 'red' : 'green';
+    const color = !isCorrect ? '#1677ff' : 'green';
 
     const deleteAnswers = useCallback(() => {
-        setQuiz(prevState => {
-            const index = prevState.quiz.findIndex(elem => elem.id === quizElem.id);
-            if (index === -1) return prevState;
-            return {
-                ...prevState, quiz: [...prevState.quiz.slice(0, index),
-                    {
-                        ...prevState.quiz[index],
-                        answers: [...prevState.quiz[index].answers.filter(elem => elem.id !== id)]
-                    },
-                    ...prevState.quiz.slice(index + 1)]
-            };
-        });
+        setQuestion(prevState => ({
+            ...prevState,
+            answers: [...prevState.answers.filter(elem => elem.id !== id)]
+        }));
     }, []);
 
     const deleteButtonHandler = () => {

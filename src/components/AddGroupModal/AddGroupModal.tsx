@@ -1,45 +1,62 @@
-import React, {ChangeEvent, Dispatch, SetStateAction, useState} from "react";
+import React, {ChangeEvent, Dispatch, SetStateAction, useRef, useState} from "react";
 import Modal from "antd/es/modal/Modal";
 import css from "../Modal/ModalQuiz.module.css";
 import {Input} from "antd";
 import {ModalFooter} from "../Modal/ModalFooter/ModalFooter";
 import {IQuiz, IQuizGroup} from "../../api/quiz.api";
-import {ModalBody} from "../Modal/ModalBody/ModalBody";
 import {AddBodyModal} from "./AddBody/AddBodyModal";
+import {useAppDispatch} from "../../hooks/reduxHooks";
+import {addQuestion, addQuizGroup} from "../../store/slices/quizGropSlice";
+import {uuid} from "../../utils/utils";
 
-const init:IQuizGroup = {
+const initQuizGroup: IQuizGroup = {
     id: "",
     quiz: [],
     title: ""
+}
+
+const init: IQuiz = {
+    answers: [], id: "", img: "", question: "", timer: 0, idQuizGroup: '',
 };
 
 export const AddGroupModal = (props: {
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
+    quizGroup?: IQuizGroup;
 }): JSX.Element => {
-    const {open, setOpen} = props;
-    const [input, setInput] = useState<string>('');
-    const [quiz, setQuiz] = useState<IQuizGroup>(init);
+    const {open, setOpen, quizGroup} = props;
+    const [quiz, setQuiz] = useState<IQuizGroup>(quizGroup ?? initQuizGroup);
+    const dispatch = useAppDispatch();
+    const [question, setQuestion] = useState<IQuiz>(init);
     const handelInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setInput(event.target.value);
+        setQuiz((prevState) => ({...prevState, title: event.target.value}));
     };
     const handleCancel = () => {
         setOpen(false);
+        setQuestion(init);
+        setQuiz(quizGroup ?? initQuizGroup);
     };
     const handleOk = () => {
+        const id = uuid();
+        dispatch(addQuizGroup({...quiz, id: id}));
+        dispatch(addQuestion({id: id, quiz: {...question, idQuizGroup: id}}))
         setOpen(false);
+        setQuestion(init);
+        setQuiz(quizGroup ?? initQuizGroup);
     };
     return (
         <Modal
             className={css.modal}
             open={open}
             width={'60%'}
-            title={<Input bordered={false} placeholder={'Add group title'} onChange={handelInputChange}
+            title={<Input bordered={false}
+                          placeholder={'Add group title'}
+                          onChange={handelInputChange}
                           value={quiz.title}/>} onOk={handleOk}
             onCancel={handleCancel}
             footer={<ModalFooter handleCancel={handleCancel} loading={false} handleOk={handleOk}/>}
         >
-            <AddBodyModal quizGroup={quiz} setQuiz={setQuiz}/>
+            <AddBodyModal question={question} id={quiz.id} setQuestion={setQuestion}/>
         </Modal>
     );
 }
