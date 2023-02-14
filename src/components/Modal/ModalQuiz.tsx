@@ -15,9 +15,8 @@ export const ModalQuiz = (props: {
     const {quizGroup, deleteHandler} = props;
     const [open, setOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const [quiz, setQuiz] = useState<IQuizGroup>(quizGroup);
     const [product, updateProduct] = useImmer<IQuizGroup>(quizGroup);
-    console.log('product', product);
+
     const showModal = () => {
         setOpen(true);
     };
@@ -33,14 +32,13 @@ export const ModalQuiz = (props: {
     };
 
     const handelInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setQuiz(prevState => ({...prevState, title: event.target.value}));
         updateProduct(draft => {draft.title = event.target.value});
     };
     return (
         <>
             <div className={css.button_wrapper}>
                 <Button type="primary" onClick={showModal}>
-                    {quiz.title}
+                    {product.title}
                 </Button>
                 <DeleteOutlined onClick={deleteHandler} className={css.remove}/>
             </div>
@@ -49,12 +47,12 @@ export const ModalQuiz = (props: {
                 open={open}
                 width={'60%'}
                 title={<Input bordered={false} placeholder={'Add group title'} onChange={handelInputChange}
-                              value={quiz.title}/>}
+                              value={product.title}/>}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 footer={<ModalFooter handleCancel={handleCancel} loading={loading} handleOk={handleOk}/>}
             >
-                <ModalBody quizGroup={product} updateProduct={updateProduct} setQuiz={setQuiz}/>
+                <ModalBody quizGroup={product} updateProduct={updateProduct}/>
             </Modal>
         </>
     );

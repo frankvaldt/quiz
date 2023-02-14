@@ -4,10 +4,11 @@ import css from "../Modal/ModalQuiz.module.css";
 import {Input} from "antd";
 import {ModalFooter} from "../Modal/ModalFooter/ModalFooter";
 import {IQuiz, IQuizGroup} from "../../api/quiz.api";
-import {AddBodyModal} from "./AddBody/AddBodyModal";
 import {useAppDispatch} from "../../hooks/reduxHooks";
 import {addQuestion, addQuizGroup} from "../../store/slices/quizGropSlice";
 import {uuid} from "../../utils/utils";
+import {useImmer} from "use-immer";
+import {ModalBody} from "../Modal/ModalBody/ModalBody";
 
 const initQuizGroup: IQuizGroup = {
     id: "",
@@ -26,6 +27,7 @@ export const AddGroupModal = (props: {
 }): JSX.Element => {
     const {open, setOpen, quizGroup} = props;
     const [quiz, setQuiz] = useState<IQuizGroup>(quizGroup ?? initQuizGroup);
+    const [product, updateProduct] = useImmer<IQuizGroup>(initQuizGroup);
     const dispatch = useAppDispatch();
     const [question, setQuestion] = useState<IQuiz>(init);
     const handelInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -56,7 +58,7 @@ export const AddGroupModal = (props: {
             onCancel={handleCancel}
             footer={<ModalFooter handleCancel={handleCancel} loading={false} handleOk={handleOk}/>}
         >
-            <AddBodyModal question={question} id={quiz.id} setQuestion={setQuestion}/>
+            <ModalBody quizGroup={product} updateProduct={updateProduct} />
         </Modal>
     );
 }

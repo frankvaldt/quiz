@@ -76,12 +76,8 @@ export const {
     setQuizGroups,
     addQuizGroup,
     removeQuizGroup,
-    changeAllQuiz,
-    changeOneQuiz,
     addQuestion,
-    deleteQuiz,
     changeQuizGroup,
-    addToStartGroup,
     addQuestionToStart
 } = quizGropSlice.actions;
 

@@ -12,13 +12,13 @@ const init: IQuiz = {
 
 export const ModalBody = (props: {
     quizGroup: IQuizGroup;
-    setQuiz: Dispatch<SetStateAction<IQuizGroup>>;
     updateProduct: Updater<IQuizGroup>;
 }): JSX.Element => {
     const {quizGroup, updateProduct} = props;
-    const [question, setQuestion] = useState<IQuiz>({...init, idQuizGroup: quizGroup.id, id: uuid()});
     const onClick = () => {
-        setQuestion({...init, idQuizGroup: quizGroup.id, id: uuid()})
+        updateProduct(draft => {
+            draft.quiz.unshift({...init, idQuizGroup: quizGroup.id, id: uuid()});
+        });
     }
     return (
         <>
