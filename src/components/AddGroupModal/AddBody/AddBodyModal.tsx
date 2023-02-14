@@ -17,9 +17,9 @@ export const AddBodyModal = (props: {
             <div className={css.icon_wrapper}>
                 <PlusCircleOutlined className={css.add}/>
             </div>
-            <AddQuestion quizElem={question} key={uuid()}
-                         id={id} setQuestion={setQuestion}
-            />
+            {/*<AddQuestion quizElem={question} key={uuid()}*/}
+            {/*             id={id} setQuestion={setQuestion}*/}
+            {/*/>*/}
         </>
     );
 }

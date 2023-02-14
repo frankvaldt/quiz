@@ -5,13 +5,14 @@ import {Form} from "antd";
 import css from "./../../ModalQuiz.module.css";
 import {IAnswers, IQuiz, IQuizGroup} from "../../../../api/quiz.api";
 import {uuid} from "../../../../utils/utils";
+import {Updater} from "use-immer";
 
 export const AnswerContainer = (props: {
     quizElem: IQuiz;
     answers: IAnswers[];
-    setQuestion: Dispatch<SetStateAction<IQuiz>>;
+    updateProduct: Updater<IQuizGroup>;
 }): JSX.Element => {
-    const {answers, setQuestion, quizElem} = props;
+    const {answers, quizElem, updateProduct} = props;
 
     return (
         <>
@@ -20,10 +21,10 @@ export const AnswerContainer = (props: {
                     <div className={css.answer_container}>
                         {answers.map(answer => <Answer key={uuid()} answer={answer}
                                                        quizElem={quizElem}
-                                                       setQuestion={setQuestion}/>)}
+                                                       updateProduct={updateProduct}/>)}
                     </div>
                 </Form.Item>)}
-            <AddAnswer setQuestion={setQuestion} quizElem={quizElem}/>
+            <AddAnswer updateProduct={updateProduct} quizElem={quizElem}/>
         </>
     );
 }

@@ -4,12 +4,13 @@ import css from "../../ModalQuiz.module.css";
 import {Checkbox, Form, Input} from "antd";
 import {IQuiz, IQuizGroup} from "../../../../api/quiz.api";
 import {checkSpacesString, uuid} from "../../../../utils/utils";
+import {Updater} from "use-immer";
 
 export const AddAnswer = (props: {
     quizElem: IQuiz;
-    setQuestion: Dispatch<SetStateAction<IQuiz>>;
+    updateProduct: Updater<IQuizGroup>;
 }): JSX.Element => {
-    const {setQuestion, quizElem} = props;
+    const {quizElem, updateProduct} = props;
     const [inputAnswer, setInputAnswer] = useState<string>('');
     const [isTrue, setIsTrue] = useState<boolean>(false);
     const handlerInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -18,10 +19,11 @@ export const AddAnswer = (props: {
     };
 
     const addAnswers = useCallback(() => {
-        setQuestion(prevState => ({
-            ...prevState, answers: [...prevState.answers,
-                {text: inputAnswer.trim(), isCorrect: isTrue, id: uuid(), idQuiz: quizElem.id}]
-        }));
+        updateProduct(draft => {
+            const index = draft.quiz.findIndex(elem => elem.id === quizElem.id);
+            if (index === -1) return;
+            draft.quiz[index].answers.push({text: inputAnswer.trim(), isCorrect: isTrue, id: uuid(), idQuiz: quizElem.id});
+        });
     }, [inputAnswer, isTrue]);
 
     const addAnswer = () => {

@@ -6,6 +6,7 @@ import {ModalBody} from "./ModalBody/ModalBody";
 import {DeleteOutlined} from "@ant-design/icons";
 import css from './ModalQuiz.module.css';
 import {IQuizGroup} from "../../api/quiz.api";
+import {useImmer} from "use-immer";
 
 export const ModalQuiz = (props: {
     quizGroup: IQuizGroup;
@@ -15,7 +16,8 @@ export const ModalQuiz = (props: {
     const [open, setOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [quiz, setQuiz] = useState<IQuizGroup>(quizGroup);
-
+    const [product, updateProduct] = useImmer<IQuizGroup>(quizGroup);
+    console.log('product', product);
     const showModal = () => {
         setOpen(true);
     };
@@ -32,6 +34,7 @@ export const ModalQuiz = (props: {
 
     const handelInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         setQuiz(prevState => ({...prevState, title: event.target.value}));
+        updateProduct(draft => {draft.title = event.target.value});
     };
     return (
         <>
@@ -45,12 +48,13 @@ export const ModalQuiz = (props: {
                 className={css.modal}
                 open={open}
                 width={'60%'}
-                title={<Input bordered={false} placeholder={'Add group title'} onChange={handelInputChange} value={quiz.title}/>}
+                title={<Input bordered={false} placeholder={'Add group title'} onChange={handelInputChange}
+                              value={quiz.title}/>}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 footer={<ModalFooter handleCancel={handleCancel} loading={loading} handleOk={handleOk}/>}
             >
-                <ModalBody quizGroup={quiz} setQuiz={setQuiz}/>
+                <ModalBody quizGroup={product} updateProduct={updateProduct} setQuiz={setQuiz}/>
             </Modal>
         </>
     );
