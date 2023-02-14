@@ -2,11 +2,11 @@ import React, {ChangeEvent, Dispatch, SetStateAction, useCallback, useState} fro
 import {PlusCircleOutlined} from "@ant-design/icons";
 import css from "../../ModalQuiz.module.css";
 import {Checkbox, Form, Input} from "antd";
-import {IQuizApi, IQuizGroup} from "../../../../api/quiz.api";
+import {IQuiz, IQuizGroup} from "../../../../api/quiz.api";
 import {checkSpacesString, uuid} from "../../../../utils/utils";
 
 export const AddAnswer = (props: {
-    quizElem: IQuizApi;
+    quizElem: IQuiz;
     setQuiz: Dispatch<SetStateAction<IQuizGroup>>;
 }): JSX.Element => {
     const {setQuiz, quizElem} = props;
@@ -25,7 +25,7 @@ export const AddAnswer = (props: {
                 ...prevState, quiz: [...prevState.quiz.slice(0, index),
                     {
                         ...prevState.quiz[index], answers: [...prevState.quiz[index].answers,
-                            {text: inputAnswer.trim(), isCorrect: isTrue, id: uuid()}]
+                            {text: inputAnswer.trim(), isCorrect: isTrue, id: uuid(), idQuiz: prevState.quiz[index].id}]
                     },
                     ...prevState.quiz.slice(index + 1)]
             };

@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {IQuizApi, IQuizGroup} from "../../api/quiz.api";
+import {IQuiz, IQuizGroup} from "../../api/quiz.api";
 
 export interface quizGrop {
     quizGrop: IQuizGroup[];
@@ -36,12 +36,12 @@ const quizGropSlice = createSlice({
             const index = state.quizGrop.findIndex(elem => elem.id === action.payload.id);
             state.quizGrop.splice(index, 1, action.payload);
         },
-        changeAllQuiz: (state, action: PayloadAction<{ id: string, quiz: IQuizApi[] }>) => {
+        changeAllQuiz: (state, action: PayloadAction<{ id: string, quiz: IQuiz[] }>) => {
             const group = state.quizGrop.find(elem => elem.id === action.payload.id);
             if (!group) return;
             group.quiz = action.payload.quiz;
         },
-        changeOneQuiz: (state, action: PayloadAction<{ id: string, quiz: IQuizApi }>) => {
+        changeOneQuiz: (state, action: PayloadAction<{ id: string, quiz: IQuiz }>) => {
             const group = state.quizGrop.find(elem => elem.id === action.payload.id);
             if (!group) return;
             const index = group.quiz.findIndex(elem => elem.id === action.payload.quiz.id);

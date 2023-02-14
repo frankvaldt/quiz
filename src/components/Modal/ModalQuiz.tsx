@@ -1,4 +1,4 @@
-import React, {ChangeEvent, Dispatch, SetStateAction, useEffect, useState} from "react";
+import React, {ChangeEvent, useState} from "react";
 import {Button, Input} from "antd";
 import Modal from "antd/es/modal/Modal";
 import {ModalFooter} from "./ModalFooter/ModalFooter";
@@ -6,17 +6,15 @@ import {ModalBody} from "./ModalBody/ModalBody";
 import {DeleteOutlined} from "@ant-design/icons";
 import css from './ModalQuiz.module.css';
 import {IQuizGroup} from "../../api/quiz.api";
-import {useAppDispatch} from "../../hooks/reduxHooks";
-import {changeTitleQuizGroup, removeQuizGroup} from "../../store/slices/quizGropSlice";
 
 export const ModalQuiz = (props: {
     quizGroup: IQuizGroup;
+    deleteHandler: () => void;
 }): JSX.Element => {
-    const {quizGroup} = props;
+    const {quizGroup, deleteHandler} = props;
     const [open, setOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [quiz, setQuiz] = useState<IQuizGroup>(quizGroup);
-    const dispatch = useAppDispatch();
 
     const showModal = () => {
         setOpen(true);
@@ -34,28 +32,20 @@ export const ModalQuiz = (props: {
 
     const handelInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         setQuiz(prevState => ({...prevState, title: event.target.value}));
-        // dispatch(changeTitleQuizGroup({
-        //     id: quizGroup.id,
-        //     title: event.target.value
-        // }));
     };
-
-    const handlerDeleteQuizGroup = () => {
-        dispatch(removeQuizGroup(quizGroup.id));
-    }
     return (
         <>
             <div className={css.button_wrapper}>
                 <Button type="primary" onClick={showModal}>
                     {quiz.title}
                 </Button>
-                <DeleteOutlined onClick={handlerDeleteQuizGroup} className={css.remove}/>
+                <DeleteOutlined onClick={deleteHandler} className={css.remove}/>
             </div>
             <Modal
                 className={css.modal}
                 open={open}
                 width={'60%'}
-                title={<Input bordered={false} onChange={handelInputChange} value={quiz.title}/>}
+                title={<Input bordered={false} placeholder={'Add group title'} onChange={handelInputChange} value={quiz.title}/>}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 footer={<ModalFooter handleCancel={handleCancel} loading={loading} handleOk={handleOk}/>}

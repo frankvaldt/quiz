@@ -2,24 +2,25 @@ import React, {ChangeEvent, Dispatch, SetStateAction, useCallback, useState} fro
 import {Card, Form, Input, InputNumber, Upload} from "antd";
 import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
 import css from '../../ModalQuiz.module.css';
-import {IAnswers, IQuizApi, IQuizGroup} from "../../../../api/quiz.api";
+import {IAnswers, IQuiz, IQuizGroup} from "../../../../api/quiz.api";
 import {isOnlyNumbers} from "../../../../utils/utils";
 import {useAppDispatch} from "../../../../hooks/reduxHooks";
 import {deleteQuiz} from "../../../../store/slices/quizGropSlice";
 import {AnswerContainer} from "../answer/AnswerContainer";
 
-const initQuiz: IQuizApi = {
+const initQuiz: IQuiz = {
     answers: [] as IAnswers[],
     img: "",
     question: "",
     timer: 0,
     id: '',
+    idQuizGroup:'',
 }
 
 export const Question = (props: {
-    setComponentDisabled: (a: boolean) => void;
+    setComponentDisabled?: (a: boolean) => void;
     componentDisabled: boolean;
-    quizElem: IQuizApi;
+    quizElem: IQuiz;
     id: string;
     setQuiz: Dispatch<SetStateAction<IQuizGroup>>;
 }): JSX.Element => {
@@ -32,7 +33,7 @@ export const Question = (props: {
     };
 
     const onFormLayoutChange = ({disabled}: { disabled: boolean }) => {
-        setComponentDisabled(disabled);
+        setComponentDisabled && setComponentDisabled(disabled);
     };
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         setInput(event.target.value)

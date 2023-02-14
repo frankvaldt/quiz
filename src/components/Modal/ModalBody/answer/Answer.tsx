@@ -1,11 +1,11 @@
 import React, {Dispatch, SetStateAction, useCallback} from "react";
 import {Button} from "antd";
 import {CloseCircleOutlined} from "@ant-design/icons";
-import {IAnswers, IQuizApi, IQuizGroup} from "../../../../api/quiz.api";
+import {IAnswers, IQuiz, IQuizGroup} from "../../../../api/quiz.api";
 
 export const Answer = (props: {
     answer: IAnswers;
-    quizElem: IQuizApi;
+    quizElem: IQuiz;
     setQuiz: Dispatch<SetStateAction<IQuizGroup>>
 }): JSX.Element => {
     const {answer, setQuiz, quizElem} = props;

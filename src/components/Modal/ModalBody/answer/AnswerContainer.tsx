@@ -3,11 +3,11 @@ import {Answer} from "./Answer";
 import {AddAnswer} from "./AddAnswer";
 import {Form} from "antd";
 import css from "./../../ModalQuiz.module.css";
-import {IAnswers, IQuizApi, IQuizGroup} from "../../../../api/quiz.api";
+import {IAnswers, IQuiz, IQuizGroup} from "../../../../api/quiz.api";
 import {uuid} from "../../../../utils/utils";
 
 export const AnswerContainer = (props: {
-    quizElem: IQuizApi;
+    quizElem: IQuiz;
     answers: IAnswers[];
     setQuiz: Dispatch<SetStateAction<IQuizGroup>>;
 }): JSX.Element => {
