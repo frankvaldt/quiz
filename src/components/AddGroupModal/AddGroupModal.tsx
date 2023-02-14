@@ -26,25 +26,26 @@ export const AddGroupModal = (props: {
     quizGroup?: IQuizGroup;
 }): JSX.Element => {
     const {open, setOpen, quizGroup} = props;
-    const [quiz, setQuiz] = useState<IQuizGroup>(quizGroup ?? initQuizGroup);
     const [product, updateProduct] = useImmer<IQuizGroup>(initQuizGroup);
     const dispatch = useAppDispatch();
     const [question, setQuestion] = useState<IQuiz>(init);
     const handelInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setQuiz((prevState) => ({...prevState, title: event.target.value}));
+        updateProduct((draft) => {
+            draft.title = event.target.value
+        });
     };
     const handleCancel = () => {
         setOpen(false);
         setQuestion(init);
-        setQuiz(quizGroup ?? initQuizGroup);
+        updateProduct(quizGroup ?? initQuizGroup);
     };
     const handleOk = () => {
         const id = uuid();
-        dispatch(addQuizGroup({...quiz, id: id}));
+        dispatch(addQuizGroup({...product, id: id}));
         dispatch(addQuestion({id: id, quiz: {...question, idQuizGroup: id}}))
         setOpen(false);
         setQuestion(init);
-        setQuiz(quizGroup ?? initQuizGroup);
+        updateProduct(quizGroup ?? initQuizGroup);
     };
     return (
         <Modal
@@ -54,11 +55,11 @@ export const AddGroupModal = (props: {
             title={<Input bordered={false}
                           placeholder={'Add group title'}
                           onChange={handelInputChange}
-                          value={quiz.title}/>} onOk={handleOk}
+                          value={product.title}/>} onOk={handleOk}
             onCancel={handleCancel}
             footer={<ModalFooter handleCancel={handleCancel} loading={false} handleOk={handleOk}/>}
         >
-            <ModalBody quizGroup={product} updateProduct={updateProduct} />
+            <ModalBody quizGroup={product} updateProduct={updateProduct}/>
         </Modal>
     );
 }
