@@ -1,7 +1,7 @@
 import React, {useCallback} from "react";
 import {Button} from "antd";
 import {CloseCircleOutlined} from "@ant-design/icons";
-import {IAnswers, IQuiz, IQuizGroup} from "../../../../api/quiz.api";
+import {IAnswers, IQuiz, IQuizGroup} from "../../../../api/quiz.interface";
 import {Updater} from "use-immer";
 
 export const Answer = (props: {
@@ -24,6 +24,7 @@ export const Answer = (props: {
     const deleteButtonHandler = () => {
         deleteAnswers();
     };
+    
     return (
         <>
             <Button style={{color: color, borderColor: color}}>

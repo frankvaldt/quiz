@@ -7,6 +7,7 @@ import {uuid} from "../utils/utils";
 import {useAppDispatch, useAppSelector} from "../hooks/reduxHooks";
 import {removeQuizGroup, setQuizGroups} from "../store/slices/quizGropSlice";
 import {AddGroupModal} from "../components/AddGroupModal/AddGroupModal";
+import {deleteQuizGroupHttp} from "../api/quiz.api";
 
 export const EditQuiz = (): JSX.Element => {
     const quizGroupFromState = useAppSelector(state => state.quizGrop.quizGrop);
@@ -18,19 +19,20 @@ export const EditQuiz = (): JSX.Element => {
     }, [dispatch]);
     const deleteQuizGroup = (id: string) => {
         dispatch(removeQuizGroup(id));
+        deleteQuizGroupHttp(id).then();
     };
 
     return (
         <div className={css.wrapper}>
             <div onClick={() => setOpen(true)} className={css.add_icon}>
-                <PlusSquareTwoTone />
+                <PlusSquareTwoTone/>
             </div>
             {quizGroupFromState.map((quiz) =>
                 <div key={uuid()}>
                     <ModalQuiz quizGroup={quiz}
                                deleteHandler={() => deleteQuizGroup(quiz.id)}/>
                 </div>)}
-            <AddGroupModal open={open} setOpen={setOpen} />
+            <AddGroupModal open={open} setOpen={setOpen}/>
         </div>
     );
 }

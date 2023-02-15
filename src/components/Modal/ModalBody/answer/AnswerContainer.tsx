@@ -1,9 +1,9 @@
-import React, {Dispatch, SetStateAction, useCallback, useEffect, useState} from "react";
+import React from "react";
 import {Answer} from "./Answer";
 import {AddAnswer} from "./AddAnswer";
 import {Form} from "antd";
 import css from "./../../ModalQuiz.module.css";
-import {IAnswers, IQuiz, IQuizGroup} from "../../../../api/quiz.api";
+import {IAnswers, IQuiz, IQuizGroup} from "../../../../api/quiz.interface";
 import {uuid} from "../../../../utils/utils";
 import {Updater} from "use-immer";
 
@@ -13,7 +13,6 @@ export const AnswerContainer = (props: {
     updateProduct: Updater<IQuizGroup>;
 }): JSX.Element => {
     const {answers, quizElem, updateProduct} = props;
-
     return (
         <>
             {answers.length > 0 && (

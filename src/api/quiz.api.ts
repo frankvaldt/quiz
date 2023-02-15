@@ -1,21 +1,23 @@
-export interface IQuizGroup{
-    title: string;
-    quiz: IQuiz[];
-    id: string;
-}
+import {IQuizGroup} from "./quiz.interface";
+import axios from "axios";
+import {BASE_URL} from "../paths/paths";
 
-export interface IQuiz {
-    img?: string
-    question: string;
-    timer?: number;
-    answers: IAnswers[];
-    id: string;
-    idQuizGroup: string;
-}
+export const updateQuizGroup = (quizGroup: IQuizGroup) => {
+    return axios.post(BASE_URL + '/updateQuizGroup', {
+        quizGroup: quizGroup
+    });
+};
 
-export interface IAnswers{
-    text: string;
-    isCorrect?: boolean;
-    id: string;
-    idQuiz:string;
-}
+export const addQuizGroupHttp = (quizGroup: IQuizGroup) => {
+    return axios.post(BASE_URL + '/addQuizGroup', {
+        quizGroup: quizGroup
+    });
+};
+
+export const deleteQuizGroupHttp = (id: string) => {
+    return axios.delete(BASE_URL + '/deleteQuizGroup', {
+        data: {
+            id: id
+        }
+    });
+};

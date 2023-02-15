@@ -1,8 +1,8 @@
-import React, {ChangeEvent, Dispatch, SetStateAction, useCallback, useState} from "react";
+import React, {ChangeEvent, useCallback, useState} from "react";
 import {PlusCircleOutlined} from "@ant-design/icons";
 import css from "../../ModalQuiz.module.css";
 import {Checkbox, Form, Input} from "antd";
-import {IQuiz, IQuizGroup} from "../../../../api/quiz.api";
+import {IQuiz, IQuizGroup} from "../../../../api/quiz.interface";
 import {checkSpacesString, uuid} from "../../../../utils/utils";
 import {Updater} from "use-immer";
 
@@ -22,7 +22,12 @@ export const AddAnswer = (props: {
         updateProduct(draft => {
             const index = draft.quiz.findIndex(elem => elem.id === quizElem.id);
             if (index === -1) return;
-            draft.quiz[index].answers.push({text: inputAnswer.trim(), isCorrect: isTrue, id: uuid(), idQuiz: quizElem.id});
+            draft.quiz[index].answers.push({
+                text: inputAnswer.trim(),
+                isCorrect: isTrue,
+                id: uuid(),
+                idQuiz: quizElem.id
+            });
         });
     }, [inputAnswer, isTrue]);
 

@@ -5,8 +5,9 @@ import {ModalFooter} from "./ModalFooter/ModalFooter";
 import {ModalBody} from "./ModalBody/ModalBody";
 import {DeleteOutlined} from "@ant-design/icons";
 import css from './ModalQuiz.module.css';
-import {IQuizGroup} from "../../api/quiz.api";
+import {IQuizGroup} from "../../api/quiz.interface";
 import {useImmer} from "use-immer";
+import {updateQuizGroup} from "../../api/quiz.api";
 
 export const ModalQuiz = (props: {
     quizGroup: IQuizGroup;
@@ -25,14 +26,17 @@ export const ModalQuiz = (props: {
     };
     const handleOk = () => {
         setLoading(true);
-        setTimeout(() => {
+        updateQuizGroup(product).then(() => {
             setLoading(false);
             setOpen(false);
-        }, 3000);
+        })
+
     };
 
     const handelInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        updateProduct(draft => {draft.title = event.target.value});
+        updateProduct(draft => {
+            draft.title = event.target.value
+        });
     };
     return (
         <>

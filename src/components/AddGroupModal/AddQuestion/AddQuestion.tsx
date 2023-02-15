@@ -3,7 +3,7 @@ import {Card, Form, Input, InputNumber, Upload} from "antd";
 import css from "../../Modal/ModalQuiz.module.css";
 import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
 import {isOnlyNumbers} from "../../../utils/utils";
-import {IQuiz, IQuizGroup} from "../../../api/quiz.api";
+import {IQuiz, IQuizGroup} from "../../../api/quiz.interface";
 import {AnswerContainer} from "../../Modal/ModalBody/answer/AnswerContainer";
 import {Updater} from "use-immer";
 

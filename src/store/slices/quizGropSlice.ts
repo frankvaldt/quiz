@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {IQuiz, IQuizGroup} from "../../api/quiz.api";
+import {IQuiz, IQuizGroup} from "../../api/quiz.interface";
 
 export interface quizGrop {
     quizGrop: IQuizGroup[];

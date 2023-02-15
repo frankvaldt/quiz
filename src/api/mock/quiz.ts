@@ -1,4 +1,4 @@
-import {IAnswers, IQuizGroup} from "../quiz.api";
+import {IAnswers, IQuizGroup} from "../quiz.interface";
 import {uuid} from "../../utils/utils";
 
 

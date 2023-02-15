@@ -1,7 +1,7 @@
 import React, {Dispatch, SetStateAction, useState} from "react";
 import css from '../ModalQuiz.module.css';
 import {PlusCircleOutlined} from "@ant-design/icons";
-import {IQuiz, IQuizGroup} from "../../../api/quiz.api";
+import {IQuiz, IQuizGroup} from "../../../api/quiz.interface";
 import {uuid} from "../../../utils/utils";
 import {Updater} from "use-immer";
 import {AddQuestion} from "../../AddGroupModal/AddQuestion/AddQuestion";

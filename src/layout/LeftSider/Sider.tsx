@@ -3,11 +3,11 @@ import Sider from "antd/es/layout/Sider";
 import {Menu} from "antd";
 import {PlusSquareOutlined} from "@ant-design/icons";
 
-const items = [ {
+const items = [{
     key: '1',
-    icon: <PlusSquareOutlined />,
+    icon: <PlusSquareOutlined/>,
     label: 'Edit Quiz'
-  }]
+}]
 
 export const LeftSider = (): JSX.Element => {
     const [collapsed, setCollapsed] = useState(true);
