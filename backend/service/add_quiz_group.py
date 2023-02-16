@@ -1,9 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from frontend.backend.init import engine, get_session
-from frontend.backend.models.QuizGroup import QuizGroup
+from AdminPanel.backend.init import engine, get_session
+from AdminPanel.backend.models.QuizGroup import QuizGroup
 from dto.dto import QuizGroupDto, QuizDto, AnswerDto
-from frontend.backend.models.Quiz import Quiz
+from AdminPanel.backend.models.Quiz import Quiz
 
 
 async def add_quiz_group(quiz_group):

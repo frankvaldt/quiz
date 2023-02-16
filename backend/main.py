@@ -10,7 +10,7 @@ from flask_cors import cross_origin, CORS
 from quart_cors import cors
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from frontend.backend.service.add_quiz_group import add_quiz_group
+from AdminPanel.backend.service.add_quiz_group import add_quiz_group
 from init import init_models
 
 sys.path.append(getcwd())

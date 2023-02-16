@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from frontend.backend.models.Score import Score
+from AdminPanel.backend.models.Score import Score
 
 from init import Base
 

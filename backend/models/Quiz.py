@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from frontend.backend.models.Answer import Answer
+from AdminPanel.backend.models.Answer import Answer
 
 from init import Base
 

@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-from frontend.backend.models.Score import Score
-from frontend.backend.models.Quiz import Quiz
+from AdminPanel.backend.models.Score import Score
+from AdminPanel.backend.models.Quiz import Quiz
 
 from init import Base
 

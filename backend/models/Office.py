@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-from frontend.backend.models.User import User
+from AdminPanel.backend.models.User import User
 
 from init import Base
 
