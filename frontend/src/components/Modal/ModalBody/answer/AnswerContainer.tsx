@@ -2,7 +2,7 @@ import React from "react";
 import {Answer} from "./Answer";
 import {AddAnswer} from "./AddAnswer";
 import {Form} from "antd";
-import css from "./../../ModalQuiz.module.css";
+import css from "../../ModalQuiz.module.css";
 import {IAnswers, IQuiz, IQuizGroup} from "../../../../api/quiz.interface";
 import {uuid} from "../../../../utils/utils";
 import {Updater} from "use-immer";
