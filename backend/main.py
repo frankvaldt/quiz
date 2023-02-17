@@ -2,15 +2,11 @@ import asyncio
 import sys
 from os import path, getcwd
 
-import sqlalchemy
-from quart import Quart
 import typer
 from flask import Flask, request
 from flask_cors import cross_origin, CORS
-from quart_cors import cors
-from sqlalchemy.ext.asyncio import create_async_engine
 
-from AdminPanel.backend.service.add_quiz_group import add_quiz_group
+from AdminPanel.backend.service.add_quiz_group import add_quiz_group, get_quizzes_groups
 from init import init_models
 
 sys.path.append(getcwd())
@@ -26,6 +22,12 @@ CORS(app)
 @cross_origin()
 async def hello1():
     return "Hello, World!"
+
+
+@app.route('/getQuizGroup', methods=['GET'])
+async def get_quiz_group_http():
+    quizzes_groups = await get_quizzes_groups()
+    return 'lol';
 
 
 @app.route('/addQuizGroup', methods=['POST'])

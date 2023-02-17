@@ -1,4 +1,6 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+import uuid
+
+from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from AdminPanel.backend.models.Score import Score
 
@@ -8,7 +10,7 @@ from init import Base
 class User(Base):
     __tablename__ = "User"
 
-    id = Column(Integer, autoincrement=True, primary_key=True, index=True)
+    id = Column('id', Text(length=36), default=lambda: str(uuid.uuid4()), primary_key=True)
     id_telegram = Column(Integer)
     name = Column(String)
     office_id = Column(Integer, ForeignKey("Office.id"))
