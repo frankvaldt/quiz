@@ -2,24 +2,23 @@ import React, {useEffect, useState} from "react";
 import {ModalQuiz} from "../components/Modal/ModalQuiz";
 import {PlusSquareTwoTone} from "@ant-design/icons";
 import css from './EditQuize.module.css';
-import {quizGroups} from "../api/mock/quiz";
 import {uuid} from "../utils/utils";
 import {useAppDispatch, useAppSelector} from "../hooks/reduxHooks";
-import {removeQuizGroup, setQuizGroups} from "../store/slices/quizGropSlice";
+import {getQuizGroupsFromRequest, removeQuizGroup} from "../store/slices/quizGropSlice";
 import {AddGroupModal} from "../components/AddGroupModal/AddGroupModal";
 import {deleteQuizGroupHttp} from "../api/quiz.api";
 
 export const EditQuiz = (): JSX.Element => {
     const quizGroupFromState = useAppSelector(state => state.quizGrop.quizGrop);
     const [open, setOpen] = useState<boolean>(false);
-
     const dispatch = useAppDispatch();
     useEffect(() => {
-        dispatch(setQuizGroups(quizGroups));
-    }, [dispatch]);
+        dispatch(getQuizGroupsFromRequest());
+    }, []);
     const deleteQuizGroup = (id: string) => {
-        dispatch(removeQuizGroup(id));
-        deleteQuizGroupHttp(id).then();
+        deleteQuizGroupHttp(id).then(() =>
+            dispatch(getQuizGroupsFromRequest())
+        );
     };
 
     return (

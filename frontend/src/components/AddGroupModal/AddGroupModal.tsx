@@ -9,7 +9,7 @@ import {addQuizGroup} from "../../store/slices/quizGropSlice";
 import {uuid} from "../../utils/utils";
 import {useImmer} from "use-immer";
 import {ModalBody} from "../Modal/ModalBody/ModalBody";
-import {addQuizGroupHttp} from "../../api/quiz.api";
+import {addQuizGroupHttp, getQuizGroupHttp} from "../../api/quiz.api";
 
 const initQuizGroup: IQuizGroup = {
     id: "",
@@ -40,6 +40,7 @@ export const AddGroupModal = (props: {
         addQuizGroupHttp(product).then(() => {
             setOpen(false);
             updateProduct(quizGroup ?? {...initQuizGroup, id: uuid()});
+            getQuizGroupHttp();
         });
     };
     return (
