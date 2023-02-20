@@ -33,7 +33,7 @@ async def set_quiz_group(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['title'] = message.text
         session = AsyncSession(engine, expire_on_commit=False)
-        quiz_group = await get_value_from_query(select(QuizGroup))
+        quiz_group = await get_value_from_query(select(QuizGroup).where(QuizGroup.title == data['title']))
         quizzes = await get_values_from_query(select(Quiz).where(Quiz.id_QuizGroup == quiz_group.id))
         for quiz in quizzes:
             markup = await generate_answers_buttons(quiz)
@@ -48,3 +48,4 @@ async def generate_answers_buttons(quiz):
     answers = await get_values_from_query(select(Answer).where(Answer.id_Quiz == quiz.id))
     for answer in answers:
         markup.add(InlineKeyboardButton(answer.text, callback_data=answer.id))
+    return markup
