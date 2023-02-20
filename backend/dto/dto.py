@@ -4,8 +4,9 @@ from dataclasses import dataclass
 @dataclass
 class AnswerDto:
     text: str
-    is_correct: bool
+    isCorrect: bool
     id: str
+    idQuiz: str
 
 
 @dataclass
@@ -15,6 +16,7 @@ class QuizDto:
     timer: int
     img: str
     id: str
+    idQuizGroup: str
 
 
 @dataclass

@@ -7,10 +7,12 @@ from flask import Flask, request
 from flask_cors import cross_origin, CORS
 
 from AdminPanel.backend.service.service import add_quiz_group, \
-    get_quizzes_groups, delete_quizz_groups
+    get_quizzes_groups, delete_quiz_group, update_quiz_group
 from init import init_models
-
+import logging
 from flask import jsonify
+
+logging.basicConfig(level=logging.INFO)
 
 sys.path.append(getcwd())
 cli = typer.Typer()
@@ -18,7 +20,8 @@ app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
 # app = cors(app, allow_origin="*")
 
-CORS(app)
+CORS(app, resources={r"*": {"origins": "*"}})
+logging.getLogger('flask_cors').level = logging.DEBUG
 
 
 @app.route("/")
@@ -42,26 +45,32 @@ async def add_quiz_group_http():
 
 
 @app.route('/updateQuizGroup', methods=['POST'])
-async def update_quiz_group():
+async def update_quiz_group_http():
     req_data = request.get_json(force=True)
     quiz_group = req_data['quizGroup']
-    await delete_quizz_groups(quiz_group['id'])
-    await add_quiz_group(quiz_group)
+    await update_quiz_group(quiz_group)
+    # await delete_quizz_groups(quiz_group['id'])
+    # await add_quiz_group(quiz_group)
     return quiz_group
 
 
 @app.route('/deleteQuizGroup', methods=['DELETE'])
-async def delete_quiz_group():
+async def delete_quiz_group_http():
     req_data = request.get_json(force=True)
     req_id = req_data['id']
-    await delete_quizz_groups(req_id)
+    await delete_quiz_group(req_id)
     return req_id
+
+
+@app.errorhandler(500)
+def server_error(e):
+    logging.exception('An error occurred during a request. %s', e)
+    return "An internal error occurred", 500
 
 
 @cli.command()
 def db_init_models():
     asyncio.run(init_models())
-    print("Done")
 
 
 if __name__ == '__main__':

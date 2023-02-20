@@ -7,7 +7,9 @@ import {DeleteOutlined} from "@ant-design/icons";
 import css from './ModalQuiz.module.css';
 import {IQuizGroup} from "../../api/quiz.interface";
 import {useImmer} from "use-immer";
-import {updateQuizGroup} from "../../api/quiz.api";
+import {getQuizGroupHttp, updateQuizGroup} from "../../api/quiz.api";
+import {getQuizGroupsFromRequest} from "../../store/slices/quizGropSlice";
+import {useAppDispatch} from "../../hooks/reduxHooks";
 
 export const ModalQuiz = (props: {
     quizGroup: IQuizGroup;
@@ -17,6 +19,7 @@ export const ModalQuiz = (props: {
     const [open, setOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [product, updateProduct] = useImmer<IQuizGroup>(quizGroup);
+    const dispatch = useAppDispatch();
 
     const showModal = () => {
         setOpen(true);
@@ -29,6 +32,7 @@ export const ModalQuiz = (props: {
         updateQuizGroup(product).then(() => {
             setLoading(false);
             setOpen(false);
+            dispatch(getQuizGroupsFromRequest());
         })
 
     };
