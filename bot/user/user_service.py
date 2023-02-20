@@ -13,7 +13,7 @@ from AdminPanel.backend.models.User import User
 
 from AdminPanel.bot.user.state.state import UserState, QuizGroupState
 from user.quiz_service import markup_quiz_group
-from user.utils.utils import get_values_from_query, check_office
+from user.utils.utils import get_values_from_query, check_office, get_value_from_query
 
 
 async def set_user(message: Message):
@@ -47,8 +47,7 @@ async def create_user(message: types.Message, state: FSMContext):
 
         # Remove keyboard
         session = AsyncSession(engine, expire_on_commit=False)
-        office_select = await session.execute(select(Office).where(Office.name == data['office']))
-        office = office_select.scalars().one()
+        office = await get_value_from_query(select(Office).where(Office.name == data['office']))
         new_user = User(name=data['name'], id_telegram=message.from_user.id, office_id=office.id)
         # And send message
         markup = await markup_quiz_group()
@@ -66,6 +65,14 @@ async def create_user(message: types.Message, state: FSMContext):
         await session.commit()
         await session.close()
     # Finish conversation
-    # await state.finish()
+    await state.finish()
 
+
+@dp.message_handler(commands=['start_quiz'])
+async def start_quiz(message: types.Message):
+    markup = await markup_quiz_group()
     await QuizGroupState.title.set()
+    await bot.send_message(
+        message.chat.id,
+        md.text('Начнем викторину: '), reply_markup=markup,
+        parse_mode=ParseMode.MARKDOWN)

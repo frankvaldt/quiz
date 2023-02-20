@@ -28,9 +28,7 @@ async def add_quiz_group(quiz_group):
         await add_and_refresh(new_group, session)
     finally:
         await session.close()
-    for quiz in quiz_group_dto.quiz:
-        new_quiz = Quiz(id_QuizGroup=new_group.id, image=quiz.img, question=quiz.question, timer=quiz.timer)
-        await add_quiz_to_quiz_group(new_quiz.id, quiz_group_dto, session)
+        await add_quiz_to_quiz_group(new_group.id, quiz_group_dto, session)
 
 
 async def add_quiz_to_quiz_group(quiz_group_id: str, quiz_group_dto: QuizGroupDto, session: AsyncSession):
