@@ -49,8 +49,6 @@ async def update_quiz_group_http():
     req_data = request.get_json(force=True)
     quiz_group = req_data['quizGroup']
     await update_quiz_group(quiz_group)
-    # await delete_quizz_groups(quiz_group['id'])
-    # await add_quiz_group(quiz_group)
     return quiz_group
 
 
