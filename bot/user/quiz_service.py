@@ -1,5 +1,5 @@
 from aiogram.dispatcher import FSMContext
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButtonPollType
 
 from AdminPanel.backend.models.QuizGroup import QuizGroup
 from AdminPanel.backend.models.Quiz import Quiz
@@ -32,7 +32,7 @@ async def process_office_invalid(message: types.Message):
 async def set_quiz_group(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['title'] = message.text
-        session = AsyncSession(engine, expire_on_commit=False)
+        print(data['title'])
         quiz_group = await get_value_from_query(select(QuizGroup).where(QuizGroup.title == data['title']))
         quizzes = await get_values_from_query(select(Quiz).where(Quiz.id_QuizGroup == quiz_group.id))
         for quiz in quizzes:
@@ -44,8 +44,20 @@ async def set_quiz_group(message: types.Message, state: FSMContext):
 
 
 async def generate_answers_buttons(quiz):
-    markup = InlineKeyboardMarkup()
+    markup = InlineKeyboardMarkup(one_time_keyboard=True)
     answers = await get_values_from_query(select(Answer).where(Answer.id_Quiz == quiz.id))
-    for answer in answers:
-        markup.add(InlineKeyboardButton(answer.text, callback_data=answer.id))
+    for elem in answers:
+        markup.add(InlineKeyboardButton(elem.text,
+                                        callback_data=elem.id,
+                                        request_poll=KeyboardButtonPollType()))
     return markup
+
+
+@dp.callback_query_handler()
+async def answer(call):
+    id_answer = call.data
+    answer_query = await get_value_from_query(select(Answer).where(Answer.id == id_answer))
+    quiz_query = await get_values_from_query(select(Quiz).where(Quiz.id == answer_query.id_Quiz))
+    quiz_group_query = await get_value_from_query(select(QuizGroup).where(QuizGroup.id == quiz_query[0].id_QuizGroup))
+    
+    print("title!!!", quiz_group_query.title)
