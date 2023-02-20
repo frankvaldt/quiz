@@ -1,6 +1,5 @@
 from user.service import set_user
-from init import dp, basedir
-from config import API_TOKEN
+from init_bot import dp
 import sys
 import os
 
@@ -16,11 +15,9 @@ async def start(message: Message):
 
 
 if __name__ == '__main__':
-    print('config ', API_TOKEN)
     if __package__ is None:
         import sys
         from os import path
 
         sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-    # cli()
     executor.start_polling(dp, skip_updates=True)
