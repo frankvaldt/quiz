@@ -6,7 +6,13 @@ from dto.dto import QuizGroupDto, QuizDto, AnswerDto
 from AdminPanel.backend.models.Quiz import Quiz
 from AdminPanel.backend.models.Answer import Answer
 from sqlalchemy.future import select
-from sqlalchemy import delete
+from sqlalchemy import delete, update
+
+
+async def update_quiz_group(quiz_group):
+    quiz_group_dto = convert_to_quiz_group_dto(quiz_group)
+    session = AsyncSession(engine, expire_on_commit=False)
+    stmt = (update(QuizGroup).where(QuizGroup.id == quiz_group_dto.id).values(title=quiz_group_dto.title))
 
 
 async def add_quiz_group(quiz_group):
@@ -89,10 +95,9 @@ async def get_quizzes_groups():
 async def delete_quizz_groups(id_group):
     session = AsyncSession(engine, expire_on_commit=False)
     id_quiz_select = await session.execute(select(Quiz.id).where(Quiz.id_QuizGroup == id_group))
-    id_quiz = id_quiz_select.scalars().one()
-    print("id!!!", id_quiz)
-    await session.execute(delete(QuizGroup).where(QuizGroup.id == id_group))
-    await session.execute(delete(Quiz).where(Quiz.id_QuizGroup == id_group))
-    await session.execute(delete(Answer).where(Answer.id_Quiz == id_quiz))
-
+    id_quizzes = id_quiz_select.scalars().all()
+    for id_quiz in id_quizzes:
+        await session.execute(delete(QuizGroup).where(QuizGroup.id == id_group))
+        await session.execute(delete(Quiz).where(Quiz.id_QuizGroup == id_group))
+        await session.execute(delete(Answer).where(Answer.id_Quiz == id_quiz))
     await session.commit()

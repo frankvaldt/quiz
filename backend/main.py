@@ -6,7 +6,7 @@ import typer
 from flask import Flask, request
 from flask_cors import cross_origin, CORS
 
-from AdminPanel.backend.service.add_quiz_group import add_quiz_group, \
+from AdminPanel.backend.service.service import add_quiz_group, \
     get_quizzes_groups, delete_quizz_groups
 from init import init_models
 
@@ -24,7 +24,7 @@ CORS(app)
 @app.route("/")
 @cross_origin()
 async def hello1():
-    return "Hello, World!"
+    return "API v1.0"
 
 
 @app.route('/getQuizGroup', methods=['GET'])
@@ -45,6 +45,8 @@ async def add_quiz_group_http():
 async def update_quiz_group():
     req_data = request.get_json(force=True)
     quiz_group = req_data['quizGroup']
+    await delete_quizz_groups(quiz_group['id'])
+    await add_quiz_group(quiz_group)
     return quiz_group
 
 

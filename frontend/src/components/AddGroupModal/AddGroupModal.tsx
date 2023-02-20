@@ -40,7 +40,7 @@ export const AddGroupModal = (props: {
         addQuizGroupHttp(product).then(() => {
             setOpen(false);
             updateProduct(quizGroup ?? {...initQuizGroup, id: uuid()});
-            getQuizGroupHttp();
+            getQuizGroupHttp().then();
         });
     };
     return (
