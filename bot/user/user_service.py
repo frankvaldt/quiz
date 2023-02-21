@@ -72,7 +72,7 @@ async def create_user(message: types.Message, state: FSMContext):
 async def start_quiz(message: types.Message):
     markup = await get_markup_without_passed(message.from_user.id)
     if len(markup.values['inline_keyboard']) > 0:
-        await message.answer('Начнем викторину: ', reply_markup=markup)
+        await message.answer('Начнем наш квиз! Выберите викторину: ', reply_markup=markup)
         await message.answer(reply_markup=ReplyKeyboardRemove(), text='Ps. Подумай перед ответом!')
     else:
         await message.answer(reply_markup=ReplyKeyboardRemove(), text='Все викторины пройдены. Ждите результатов!')
