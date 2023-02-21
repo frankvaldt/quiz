@@ -91,6 +91,8 @@ async def answer(query: CallbackQuery, callback_data: dict):
     curr_id = callback_data.get("curr_id")
     correct = callback_data.get("correct")
     user_id = query["from"].id
+    chat_id = query.message.chat.id
+    message_id = query.message.message_id
     print("query", query)
     print("callback_data", callback_data)
 
@@ -115,18 +117,20 @@ async def answer(query: CallbackQuery, callback_data: dict):
         else:
             index = -1
     if index + 1 >= len(all_quizzes):
-        markup = await get_markup_without_passed(user_id)
+        # markup = await get_markup_without_passed(user_id)
+        markup = await markup_quiz_group()
         print("markup, ", markup.values['inline_keyboard'])
         if len(markup.values['inline_keyboard']) > 0:
-            await query.message.answer(text='Начнем викторину: ',
+            await query.message.answer(text='Выберите викторину: ',
                                        reply_markup=markup)
+            await query.message.delete()
         else:
             await query.message.answer(text='Конец!')
     else:
         quiz = all_quizzes[index + 1]
         markup = await generate_answers_buttons(quiz)
-        await query.message.answer(text=quiz.question,
-                                   reply_markup=markup)
+        await query.message.edit_text(text=quiz.question)
+        await bot.edit_message_reply_markup(chat_id, message_id, reply_markup=markup)
         # myCallBack.new(curr_id=q.id, correct=q.correct)
 
 
