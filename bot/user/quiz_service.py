@@ -17,13 +17,31 @@ from user.state.state import QuizGroupState
 from user.utils.utils import get_values_from_query, check_quiz_group, get_value_from_query
 
 myCallBack = CallbackData("my", "curr_id", "correct")
+quizGroupCallBack = CallbackData("qiz", "quiz_group_id")
 
 
 async def markup_quiz_group():
     quizzes_groups = await get_values_from_query(select(QuizGroup))
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
+    markup = InlineKeyboardMarkup(one_time_keyboard=True)
     for quiz_group in quizzes_groups:
-        markup.add(quiz_group.title)
+        markup.add(
+            InlineKeyboardButton(quiz_group.title, callback_data=quizGroupCallBack.new(quiz_group_id=quiz_group.id),
+                                 request_poll=KeyboardButtonPollType()))
+    return markup
+
+
+async def get_markup_without_passed(user_id):
+    scores = await get_values_from_query(select(Score).where(Score.id_user == user_id))
+    select_groups = select(QuizGroup)
+    for score in scores:
+        select_groups = select_groups.where(QuizGroup.id != score.id_quiz_group)
+    quizzes_groups = await get_values_from_query(select_groups)
+    print(quizzes_groups)
+    markup = InlineKeyboardMarkup(one_time_keyboard=True)
+    for quiz_group in quizzes_groups:
+        markup.add(
+            InlineKeyboardButton(quiz_group.title, callback_data=quizGroupCallBack.new(quiz_group_id=quiz_group.id),
+                                 request_poll=KeyboardButtonPollType()))
     return markup
 
 
@@ -57,10 +75,22 @@ async def generate_answers_buttons(quiz):
     return markup
 
 
+@dp.callback_query_handler(quizGroupCallBack.filter())
+async def quiz_group_handler(query: CallbackQuery, callback_data: dict):
+    quiz_group_id = callback_data.get("quiz_group_id")
+    quiz_group = await get_value_from_query(select(QuizGroup).where(QuizGroup.id == quiz_group_id))
+    quizzes = await get_values_from_query(select(Quiz).where(Quiz.id_QuizGroup == quiz_group.id).order_by(Quiz.id))
+
+    markup = await generate_answers_buttons(quizzes[0])
+    await query.message.answer(text=quizzes[0].question,
+                               reply_markup=markup)
+
+
 @dp.callback_query_handler(myCallBack.filter())
 async def answer(query: CallbackQuery, callback_data: dict):
     curr_id = callback_data.get("curr_id")
     correct = callback_data.get("correct")
+    user_id = query["from"].id
     print("query", query)
     print("callback_data", callback_data)
 
@@ -73,6 +103,11 @@ async def answer(query: CallbackQuery, callback_data: dict):
     all_quizzes = await get_values_from_query(
         select(Quiz).where(Quiz.id_QuizGroup == quiz_group_query.id).order_by(Quiz.id_QuizGroup))
 
+    session = AsyncSession(engine, expire_on_commit=False)
+    await get_or_create_score(session, Score, id_user=user_id, id_quiz_group=quiz_group_query.id)
+    await session.execute(update(Score).values(score=Score.score + answer_query.correct))
+    await session.commit()
+
     index = -1
     for index, item in enumerate(all_quizzes):
         if item.id == quiz_query.id:
@@ -80,18 +115,15 @@ async def answer(query: CallbackQuery, callback_data: dict):
         else:
             index = -1
     if index + 1 >= len(all_quizzes):
-        print("end")
+        markup = await get_markup_without_passed(user_id)
+        await query.message.answer(text='Начнем викторину: ',
+                                   reply_markup=markup)
     else:
         quiz = all_quizzes[index + 1]
         markup = await generate_answers_buttons(quiz)
         await query.message.answer(text=quiz.question,
                                    reply_markup=markup)
         # myCallBack.new(curr_id=q.id, correct=q.correct)
-
-    session = AsyncSession(engine, expire_on_commit=False)
-    await get_or_create_score(session, Score, id_user=query["from"].id, id_quiz_group=quiz_group_query.id)
-    await session.execute(update(Score).values(score=Score.score + answer_query.correct))
-    await session.commit()
 
 
 async def get_or_create_score(session, model, id_user, id_quiz_group):

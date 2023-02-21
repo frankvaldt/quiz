@@ -71,5 +71,5 @@ async def create_user(message: types.Message, state: FSMContext):
 @dp.message_handler(commands=['start_quiz'])
 async def start_quiz(message: types.Message):
     markup = await markup_quiz_group()
-    await QuizGroupState.title.set()
+    # await QuizGroupState.title.set()
     await message.answer('Начнем викторину: ', reply_markup=markup)
