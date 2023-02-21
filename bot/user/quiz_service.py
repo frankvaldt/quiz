@@ -40,7 +40,8 @@ async def get_markup_without_passed(user_id):
     markup = InlineKeyboardMarkup(one_time_keyboard=True)
     for quiz_group in quizzes_groups:
         markup.add(
-            InlineKeyboardButton(quiz_group.title, callback_data=quizGroupCallBack.new(quiz_group_id=quiz_group.id),
+            InlineKeyboardButton(quiz_group.title,
+                                 callback_data=quizGroupCallBack.new(quiz_group_id=quiz_group.id),
                                  request_poll=KeyboardButtonPollType()))
     return markup
 
@@ -77,6 +78,7 @@ async def generate_answers_buttons(quiz):
 
 @dp.callback_query_handler(quizGroupCallBack.filter())
 async def quiz_group_handler(query: CallbackQuery, callback_data: dict):
+    await query.message.delete()
     quiz_group_id = callback_data.get("quiz_group_id")
     quiz_group = await get_value_from_query(select(QuizGroup).where(QuizGroup.id == quiz_group_id))
     quizzes = await get_values_from_query(select(Quiz).where(Quiz.id_QuizGroup == quiz_group.id).order_by(Quiz.id))
@@ -117,14 +119,13 @@ async def answer(query: CallbackQuery, callback_data: dict):
         else:
             index = -1
     if index + 1 >= len(all_quizzes):
-        # markup = await get_markup_without_passed(user_id)
-        markup = await markup_quiz_group()
-        print("markup, ", markup.values['inline_keyboard'])
+        markup = await get_markup_without_passed(user_id)
+        # markup = await markup_quiz_group()
         if len(markup.values['inline_keyboard']) > 0:
-            await query.message.answer(text='Выберите викторину: ',
-                                       reply_markup=markup)
-            await query.message.delete()
+            await query.message.edit_text(text='Выберите викторину: ')
+            await bot.edit_message_reply_markup(chat_id, message_id, reply_markup=markup)
         else:
+            await query.message.delete()
             await query.message.answer(text='Конец!')
     else:
         quiz = all_quizzes[index + 1]
@@ -136,10 +137,7 @@ async def answer(query: CallbackQuery, callback_data: dict):
 async def get_or_create_score(session, model, id_user, id_quiz_group):
     instance = await session.execute(select(model).filter_by(id_user=id_user, id_quiz_group=id_quiz_group))
     instance = instance.scalars().first()
-    if instance:
-        return instance
-    else:
-        instance = model(id_user=id_user, id_quiz_group=id_quiz_group, score=0)
+    if not instance:
+        instance = Score(id_user=id_user, id_quiz_group=id_quiz_group, score=0)
         session.add(instance)
-        session.commit()
-        return instance
+        await session.commit()
