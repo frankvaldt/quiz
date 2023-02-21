@@ -116,8 +116,12 @@ async def answer(query: CallbackQuery, callback_data: dict):
             index = -1
     if index + 1 >= len(all_quizzes):
         markup = await get_markup_without_passed(user_id)
-        await query.message.answer(text='Начнем викторину: ',
-                                   reply_markup=markup)
+        print("markup, ", markup.values['inline_keyboard'])
+        if len(markup.values['inline_keyboard']) > 0:
+            await query.message.answer(text='Начнем викторину: ',
+                                       reply_markup=markup)
+        else:
+            await query.message.answer(text='Конец!')
     else:
         quiz = all_quizzes[index + 1]
         markup = await generate_answers_buttons(quiz)
