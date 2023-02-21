@@ -8,3 +8,4 @@ class UserState(StatesGroup):
 
 class QuizGroupState(StatesGroup):
     title = State()
+    title2 = State()

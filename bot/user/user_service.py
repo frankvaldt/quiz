@@ -1,5 +1,5 @@
 from aiogram.dispatcher import FSMContext
-from aiogram.types import Message
+from aiogram.types import Message, KeyboardButtonPollType
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -50,7 +50,7 @@ async def create_user(message: types.Message, state: FSMContext):
         office = await get_value_from_query(select(Office).where(Office.name == data['office']))
         new_user = User(name=data['name'], id_telegram=message.from_user.id, office_id=office.id)
         # And send message
-        markup = await markup_quiz_group()
+        # markup = await markup_quiz_group()
         await bot.send_message(
             message.chat.id,
             md.text(
@@ -58,7 +58,7 @@ async def create_user(message: types.Message, state: FSMContext):
                 md.text('Office:', md.code(data['office'])),
                 sep='\n',
             ),
-            reply_markup=markup,
+            # reply_markup=markup,
             parse_mode=ParseMode.MARKDOWN,
         )
         session.add(new_user)
@@ -72,7 +72,4 @@ async def create_user(message: types.Message, state: FSMContext):
 async def start_quiz(message: types.Message):
     markup = await markup_quiz_group()
     await QuizGroupState.title.set()
-    await bot.send_message(
-        message.chat.id,
-        md.text('Начнем викторину: '), reply_markup=markup,
-        parse_mode=ParseMode.MARKDOWN)
+    await message.answer('Начнем викторину: ', reply_markup=markup)
