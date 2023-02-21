@@ -131,7 +131,6 @@ async def answer(query: CallbackQuery, callback_data: dict):
         markup = await generate_answers_buttons(quiz)
         await query.message.edit_text(text=quiz.question)
         await bot.edit_message_reply_markup(chat_id, message_id, reply_markup=markup)
-        # myCallBack.new(curr_id=q.id, correct=q.correct)
 
 
 async def get_or_create_score(session, model, id_user, id_quiz_group):
