@@ -12,7 +12,7 @@ from AdminPanel.backend.models.Office import Office
 from AdminPanel.backend.models.User import User
 
 from AdminPanel.bot.user.state.state import UserState, QuizGroupState
-from user.quiz_service import markup_quiz_group
+from user.quiz_service import markup_quiz_group, get_markup_without_passed
 from user.utils.utils import get_values_from_query, check_office, get_value_from_query
 
 
@@ -54,8 +54,8 @@ async def create_user(message: types.Message, state: FSMContext):
         await bot.send_message(
             message.chat.id,
             md.text(
-                md.text('Hi! Nice to meet you,', md.bold(data['name'])),
-                md.text('Office:', md.code(data['office'])),
+                md.text('Привет, приятно познакомиться', md.bold(data['name'])),
+                md.text('Ваш офис:', md.code(data['office'])),
                 sep='\n',
             ),
             reply_markup=markup,
@@ -70,6 +70,9 @@ async def create_user(message: types.Message, state: FSMContext):
 
 @dp.message_handler(text=['Старт'])
 async def start_quiz(message: types.Message):
-    markup = await markup_quiz_group()
-    const = await message.answer('Начнем викторину: ', reply_markup=markup)
-    await message.answer(reply_markup=ReplyKeyboardRemove(), text='Удачи!')
+    markup = await get_markup_without_passed(message.from_user.id)
+    if len(markup.values['inline_keyboard']) > 0:
+        await message.answer('Начнем викторину: ', reply_markup=markup)
+        await message.answer(reply_markup=ReplyKeyboardRemove(), text='Ps. Подумай перед ответом!')
+    else:
+        await message.answer(reply_markup=ReplyKeyboardRemove(), text='Все викторины пройдены. Ждите результатов!')

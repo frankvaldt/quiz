@@ -36,7 +36,6 @@ async def get_markup_without_passed(user_id):
     for score in scores:
         select_groups = select_groups.where(QuizGroup.id != score.id_quiz_group)
     quizzes_groups = await get_values_from_query(select_groups)
-    print(quizzes_groups)
     markup = InlineKeyboardMarkup(one_time_keyboard=True)
     for quiz_group in quizzes_groups:
         markup.add(
@@ -55,7 +54,6 @@ async def process_office_invalid(message: types.Message):
 async def set_quiz_group(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['title'] = message.text
-        print(data['title'])
         quiz_group = await get_value_from_query(select(QuizGroup).where(QuizGroup.title == data['title']))
         quizzes = await get_values_from_query(select(Quiz).where(Quiz.id_QuizGroup == quiz_group.id).order_by(Quiz.id))
 
@@ -95,10 +93,7 @@ async def answer(query: CallbackQuery, callback_data: dict):
     user_id = query["from"].id
     chat_id = query.message.chat.id
     message_id = query.message.message_id
-    print("query", query)
-    print("callback_data", callback_data)
 
-    # id_answer = call.data
     answer_query = await get_value_from_query(select(Answer).where(Answer.id == curr_id))
     quiz_query = await get_value_from_query(select(Quiz).where(Quiz.id == answer_query.id_Quiz))
 
@@ -120,13 +115,12 @@ async def answer(query: CallbackQuery, callback_data: dict):
             index = -1
     if index + 1 >= len(all_quizzes):
         markup = await get_markup_without_passed(user_id)
-        # markup = await markup_quiz_group()
         if len(markup.values['inline_keyboard']) > 0:
             await query.message.edit_text(text='Выберите викторину: ')
             await bot.edit_message_reply_markup(chat_id, message_id, reply_markup=markup)
         else:
             await query.message.delete()
-            await query.message.answer(text='Конец!')
+            await query.message.answer(text='Все викторины закончились, поздавляю с прохождением!')
     else:
         quiz = all_quizzes[index + 1]
         markup = await generate_answers_buttons(quiz)
