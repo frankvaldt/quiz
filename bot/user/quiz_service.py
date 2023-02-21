@@ -104,7 +104,9 @@ async def answer(query: CallbackQuery, callback_data: dict):
 
     session = AsyncSession(engine, expire_on_commit=False)
     await get_or_create_score(session, Score, id_user=user_id, id_quiz_group=quiz_group_query.id)
-    await session.execute(update(Score).values(score=Score.score + answer_query.correct))
+    await session.execute(
+        update(Score).where(Score.id_user == user_id, Score.id_quiz_group == quiz_group_query.id).values(
+            score=Score.score + answer_query.correct))
     await session.commit()
 
     index = -1
