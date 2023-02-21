@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from AdminPanel.backend.init import engine
 from AdminPanel.backend.models.QuizGroup import QuizGroup
-from dto.dto import QuizGroupDto, QuizDto, AnswerDto
+from AdminPanel.backend.dto.dto import QuizGroupDto, QuizDto, AnswerDto
 from AdminPanel.backend.models.Quiz import Quiz
 from AdminPanel.backend.models.Answer import Answer
 from sqlalchemy.future import select

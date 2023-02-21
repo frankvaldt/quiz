@@ -6,6 +6,7 @@ import os
 from aiogram.utils import executor
 from aiogram.types import Message
 
+sys.path.append("..")
 sys.path.append(os.getcwd())
 
 

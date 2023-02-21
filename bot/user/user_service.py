@@ -12,8 +12,8 @@ from AdminPanel.backend.models.Office import Office
 from AdminPanel.backend.models.User import User
 
 from AdminPanel.bot.user.state.state import UserState, QuizGroupState
-from user.quiz_service import markup_quiz_group, get_markup_without_passed
-from user.utils.utils import get_values_from_query, check_office, get_value_from_query
+from AdminPanel.bot.user.quiz_service import markup_quiz_group, get_markup_without_passed
+from AdminPanel.bot.user.utils.utils import get_values_from_query, check_office, get_value_from_query
 
 
 async def set_user(message: Message):

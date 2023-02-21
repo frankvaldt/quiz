@@ -36,6 +36,15 @@ async def get_quiz_group_http():
     return jsonify(quizzes_groups)
 
 
+# /upload.do
+
+@app.route('/upload.do', methods=['POST'])
+async def get_photo_http():
+    uploaded_img = request.files['image']
+    print(uploaded_img)
+    return 'LOL'
+
+
 @app.route('/addQuizGroup', methods=['POST'])
 async def add_quiz_group_http():
     req_data = request.get_json(force=True)

@@ -9,8 +9,20 @@
     transition: 2s;
 }
 
+.img_container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 5%;
+}
+
+.img > img {
+    width: 350px;
+    height: 200px;
+}
+
 .add {
-    color: green;
     cursor: pointer;
     transform: scale(1.5);
 }
@@ -32,9 +44,10 @@
     margin-bottom: 2%;
 }
 
-.modal{
+.modal {
     width: 120%;
 }
+
 .icon_wrapper {
     display: flex;
     align-items: center;
@@ -81,7 +94,8 @@
     min-height: 40px;
     min-width: 0;
 }
-.item{
+
+.item {
     display: flex;
     flex-direction: column;
 }
