@@ -145,6 +145,9 @@ async def answer(query: CallbackQuery, callback_data: dict):
     if index + 1 >= len(all_quizzes):
         markup = await get_markup_without_passed(user_id)
         if len(markup.values['inline_keyboard']) > 0:
+            await query.message.edit_text(text="Ваш ответ сохранен")
+            mk = await set_answer_mockup(answer_query.text)
+            await bot.edit_message_reply_markup(chat_id, message_id, reply_markup=mk)
             await query.message.answer(text='Выберите викторину: ', reply_markup=markup)
         else:
             await query.message.edit_text(text="Ваш ответ сохранен")
