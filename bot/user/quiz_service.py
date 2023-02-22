@@ -12,7 +12,7 @@ from AdminPanel.backend.models.Score import Score
 from AdminPanel.backend.models.Answer import Answer
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from init_bot import dp, bot, engine
+from AdminPanel.bot.init_bot import dp, bot, engine
 from sqlalchemy.future import select
 from sqlalchemy import update
 import base64, io
@@ -86,7 +86,7 @@ async def quiz_group_handler(query: CallbackQuery, callback_data: dict):
     # await query.message.delete()
     quiz_group_id = callback_data.get("quiz_group_id")
     quiz_group = await get_value_from_query(select(QuizGroup).where(QuizGroup.id == quiz_group_id))
-    quizzes = await get_values_from_query(select(Quiz).where(Quiz.id_QuizGroup == quiz_group.id).order_by(Quiz.id))
+    quizzes = await get_values_from_query(select(Quiz).where(Quiz.id_QuizGroup == quiz_group.id))
     await send_quiz_to_user(quizzes[0], query)
 
 
@@ -137,10 +137,15 @@ async def answer(query: CallbackQuery, callback_data: dict):
     quiz_query = await get_value_from_query(select(Quiz).where(Quiz.id == answer_query.id_Quiz))
     quiz_group_query = await get_value_from_query(select(QuizGroup).where(QuizGroup.id == quiz_query.id_QuizGroup))
     all_quizzes = await get_values_from_query(
-        select(Quiz).where(Quiz.id_QuizGroup == quiz_group_query.id).order_by(Quiz.id_QuizGroup))
+        select(Quiz).where(Quiz.id_QuizGroup == quiz_group_query.id))
 
     await change_score(quiz_group_query, answer_query, user_id)
-    index = get_index_of_quiz(all_quizzes, quiz_query.id)
+    index = -1
+    for index, item in enumerate(all_quizzes):
+        if item.id == quiz_query.id:
+            break
+        else:
+            index = -1
 
     if index + 1 >= len(all_quizzes):
         markup = await get_markup_without_passed(user_id)

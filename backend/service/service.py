@@ -5,8 +5,13 @@ from AdminPanel.backend.models.QuizGroup import QuizGroup
 from AdminPanel.backend.dto.dto import QuizGroupDto, QuizDto, AnswerDto
 from AdminPanel.backend.models.Quiz import Quiz
 from AdminPanel.backend.models.Answer import Answer
+from AdminPanel.backend.models.Score import Score
 from sqlalchemy.future import select
 from sqlalchemy import delete, update
+
+from AdminPanel.backend.models.User import User
+
+from flask import jsonify
 
 
 async def update_quiz_group(quiz_group):
@@ -119,7 +124,11 @@ async def delete_quiz_group(id_group):
     await session.execute(delete(QuizGroup).where(QuizGroup.id == id_group))
     await delete_quiz(id_group, session)
 
-
-async def get_stat():
-    session = AsyncSession(engine, expire_on_commit=False)
-    await session.execute(select())
+# async def get_stat():
+#     session = AsyncSession(engine, expire_on_commit=False)
+#     res = await session.execute(
+#         select(Score).join_from(User).where(Score.id_user == User.id).join_from(QuizGroup).where(
+#             Score.id_quiz_group == QuizGroup.id))
+#     q = res.scalars().all()
+#     for x in q:
+#         print(jsonfy(x))

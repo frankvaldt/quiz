@@ -3,7 +3,7 @@ from aiogram.types import Message, KeyboardButtonPollType, ReplyKeyboardMarkup, 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from init_bot import dp, bot, engine
+from AdminPanel.bot.init_bot import dp, bot, engine
 from aiogram import types
 from aiogram.types import ParseMode
 import aiogram.utils.markdown as md

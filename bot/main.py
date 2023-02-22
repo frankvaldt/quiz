@@ -1,5 +1,5 @@
 from user.user_service import set_user
-from init_bot import dp
+from AdminPanel.bot.init_bot import dp
 import sys
 import os
 
