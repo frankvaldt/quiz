@@ -118,3 +118,8 @@ async def delete_quiz_group(id_group):
     session = AsyncSession(engine, expire_on_commit=False)
     await session.execute(delete(QuizGroup).where(QuizGroup.id == id_group))
     await delete_quiz(id_group, session)
+
+
+async def get_stat():
+    session = AsyncSession(engine, expire_on_commit=False)
+    await session.execute(select())
