@@ -4,7 +4,7 @@ from json import dumps
 
 from aiogram.dispatcher import FSMContext
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButtonPollType, CallbackQuery, InputMedia, \
-    InputMediaPhoto, InputFile
+    InputMediaPhoto, InputFile, ReplyKeyboardRemove
 from aiogram.utils.callback_data import CallbackData
 from AdminPanel.backend.models.QuizGroup import QuizGroup
 from AdminPanel.backend.models.Quiz import Quiz
@@ -24,6 +24,7 @@ from AdminPanel.bot.user.utils.utils import get_values_from_query, \
 
 myCallBack = CallbackData("my", "curr_id", "correct")
 quizGroupCallBack = CallbackData("qiz", "quiz_group_id")
+answerCallBack = CallbackData("answer", "text")
 
 
 async def markup_quiz_group():
@@ -82,7 +83,7 @@ async def generate_answers_buttons(quiz):
 
 @dp.callback_query_handler(quizGroupCallBack.filter())
 async def quiz_group_handler(query: CallbackQuery, callback_data: dict):
-    await query.message.delete()
+    # await query.message.delete()
     quiz_group_id = callback_data.get("quiz_group_id")
     quiz_group = await get_value_from_query(select(QuizGroup).where(QuizGroup.id == quiz_group_id))
     quizzes = await get_values_from_query(select(Quiz).where(Quiz.id_QuizGroup == quiz_group.id).order_by(Quiz.id))
@@ -117,6 +118,14 @@ async def change_sent_quiz_to_user(quiz, query, chat_id, message_id):
         await bot.edit_message_reply_markup(chat_id, message_id, reply_markup=markup)
 
 
+async def set_answer_mockup(text):
+    markup = InlineKeyboardMarkup(one_time_keyboard=True)
+    txt = "Ваш ответ: " + text
+    markup.add(
+        InlineKeyboardButton(txt, callback_data=answerCallBack.new(text=text), request_poll=KeyboardButtonPollType()))
+    return markup
+
+
 @dp.callback_query_handler(myCallBack.filter())
 async def answer(query: CallbackQuery, callback_data: dict):
     curr_id = callback_data.get("curr_id")
@@ -136,17 +145,26 @@ async def answer(query: CallbackQuery, callback_data: dict):
     if index + 1 >= len(all_quizzes):
         markup = await get_markup_without_passed(user_id)
         if len(markup.values['inline_keyboard']) > 0:
-            await query.message.edit_text(text='Выберите викторину: ')
-            await bot.edit_message_reply_markup(chat_id, message_id, reply_markup=markup)
+            await query.message.answer(text='Выберите викторину: ', reply_markup=markup)
         else:
-            await query.message.delete()
+            await query.message.edit_text(text="Ваш ответ сохранен")
+            mk = await set_answer_mockup(answer_query.text)
+            await bot.edit_message_reply_markup(chat_id, message_id, reply_markup=mk)
             await query.message.answer(text='Все викторины закончились, поздавляю с прохождением!')
     else:
         quiz = all_quizzes[index + 1]
-        await change_sent_quiz_to_user(quiz, query, chat_id, message_id)
-        # markup = await generate_answers_buttons(quiz)
-        # await query.message.edit_text(text=quiz.question)
-        # await bot.edit_message_reply_markup(chat_id, message_id, reply_markup=markup)
+        await query.message.edit_text(text="Ваш ответ сохранен")
+        mk = await set_answer_mockup(answer_query.text)
+        await bot.edit_message_reply_markup(chat_id, message_id, reply_markup=mk)
+        # await change_sent_quiz_to_user(quiz, query, chat_id, message_id)
+        img = base64.b64decode(quiz.image.split(',')[1])
+        try:
+            if img:
+                await bot.send_photo(query.from_user.id, img)
+        finally:
+            markup = await generate_answers_buttons(quiz)
+            await query.message.answer(text=quiz.question,
+                                       reply_markup=markup)
 
 
 def get_index_of_quiz(all_quizzes, quiz_query_id):
