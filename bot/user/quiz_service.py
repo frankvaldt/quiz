@@ -1,5 +1,10 @@
+import ujson as json
+from PIL import Image
+from json import dumps
+
 from aiogram.dispatcher import FSMContext
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButtonPollType, CallbackQuery, InputMedia
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButtonPollType, CallbackQuery, InputMedia, \
+    InputMediaPhoto, InputFile
 from aiogram.utils.callback_data import CallbackData
 from AdminPanel.backend.models.QuizGroup import QuizGroup
 from AdminPanel.backend.models.Quiz import Quiz
@@ -10,7 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from init_bot import dp, bot, engine
 from sqlalchemy.future import select
 from sqlalchemy import update
-import base64
+import base64, io
 from aiogram import types
 
 from AdminPanel.bot.user.state.state import QuizGroupState
@@ -89,7 +94,7 @@ async def send_quiz_to_user(quiz, query):
     try:
         if img:
             await bot.send_photo(query.from_user.id, img)
-            await bot.delete_message(query.from_user.id, query.message.message_id)
+            # await bot.delete_message(query.from_user.id, query.message.message_id)
     finally:
         markup = await generate_answers_buttons(quiz)
         await query.message.answer(text=quiz.question,
@@ -101,9 +106,12 @@ async def change_sent_quiz_to_user(quiz, query, chat_id, message_id):
     img = base64.b64decode(quiz.image.split(',')[1])
     try:
         if img:
-            await bot.edit_message_media(media=InputMedia(type='photo', media=img),
-                                         chat_id=chat_id,
-                                         message_id=message_id)
+            # await bot.send_photo(query.from_user.id, img)
+            await bot.edit_message_media(
+                media=types.input_media.InputMediaPhoto(
+                    io.BytesIO(base64.decodebytes(bytes(quiz.image.split(',')[1], "utf-8")))),
+                chat_id=chat_id,
+                message_id=message_id)
     finally:
         await query.message.edit_text(text=quiz.question)
         await bot.edit_message_reply_markup(chat_id, message_id, reply_markup=markup)
