@@ -23,6 +23,7 @@ export interface IAnswers {
 export interface IStatisticForOffice {
     telegramId: string;
     userName: string;
+    quizName: string;
     score: number;
     time: number;
     id: string;

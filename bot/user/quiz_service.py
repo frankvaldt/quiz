@@ -17,9 +17,9 @@ from AdminPanel.bot.user.state.state import QuizGroupState
 from AdminPanel.bot.user.utils.utils import get_values_from_query, \
     check_quiz_group, get_value_from_query
 
-myCallBack = CallbackData("my", "curr_id", "correct")
+myCallBack = CallbackData("my", "curr_id")
 quizGroupCallBack = CallbackData("qiz", "quiz_group_id")
-answerCallBack = CallbackData("answer", "text")
+answerCallBack = CallbackData("answer", "id")
 
 
 async def markup_quiz_group():
@@ -71,7 +71,7 @@ async def generate_answers_buttons(quiz):
     answers = await get_values_from_query(select(Answer).where(Answer.id_Quiz == quiz.id))
     for elem in answers:
         markup.add(InlineKeyboardButton(elem.text,
-                                        callback_data=myCallBack.new(curr_id=elem.id, correct=elem.correct),
+                                        callback_data=myCallBack.new(curr_id=elem.id),
                                         request_poll=KeyboardButtonPollType()))
     return markup
 
@@ -117,7 +117,7 @@ async def set_answer_mockup(text):
     markup = InlineKeyboardMarkup(one_time_keyboard=True)
     txt = "Ваш ответ: " + text
     markup.add(
-        InlineKeyboardButton(txt, callback_data=answerCallBack.new(text=text), request_poll=KeyboardButtonPollType()))
+        InlineKeyboardButton(txt, callback_data=answerCallBack.new(id='x'), request_poll=KeyboardButtonPollType()))
     return markup
 
 

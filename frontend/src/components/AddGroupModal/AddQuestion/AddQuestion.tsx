@@ -40,7 +40,6 @@ export const AddQuestion = (props: {
                     if (index === -1) return;
                     draft.quiz[index].img = url;
                 })
-                console.log('url', url);
             });
         }
     };
@@ -83,7 +82,7 @@ export const AddQuestion = (props: {
                         </Upload>
                         <div className={css.img}>
                             <img alt={"ur pic"}
-                                 src={!checkSpacesString(img) ? quizElem.img : "https://www.whats-on-netflix.com/wp-content/uploads/2022/07/spy-x-family-part-2-coming-to-netflix.webp"}/>
+                                 src={!checkSpacesString(img) ? quizElem.img : "https://i.pinimg.com/originals/ae/8a/c2/ae8ac2fa217d23aadcc913989fcc34a2.png"}/>
                         </div>
                     </div>
                 </Form.Item>

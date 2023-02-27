@@ -32,6 +32,7 @@ class StatisticForOfficeDto:
     userName: str
     score: int
     time: int
+    quizName: str
     id: str
 
 

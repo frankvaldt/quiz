@@ -12,9 +12,11 @@ from sqlalchemy import delete, update
 
 from AdminPanel.backend.models.User import User
 from sqlalchemy.orm import Bundle
+import uuid
+
 from flask import jsonify
 
-from AdminPanel.bot.user.utils.utils import get_values_from_query
+from AdminPanel.bot.user.utils.utils import get_values_from_query, get_value_from_query
 
 
 async def update_quiz_group(quiz_group):
@@ -141,13 +143,16 @@ async def get_statistic():
 async def get_statistic_by_office(office_id: str) -> list[StatisticForOfficeDto]:
     session = AsyncSession(engine, expire_on_commit=False)
     res = await session.execute(
-        select(Bundle("User", User.id_telegram, User.name, User.id), Bundle("Score", Score.score)).join(
+        select(Bundle("User", User.id_telegram, User.name, User.id),
+               Bundle("Score", Score.score, Score.id_quiz_group)).join(
             Score, User.id_telegram == Score.id_user).where(User.office_id == office_id).order_by(Score.score))
     scores = []
     for x in res:
+        quiz = await get_value_from_query(select(QuizGroup).where(QuizGroup.id == x.Score.id_quiz_group))
         scores.append(StatisticForOfficeDto(telegramId=x.User.id_telegram,
                                             userName=x.User.name,
                                             score=x.Score.score,
                                             time=0,
-                                            id=x.User.id))
+                                            quizName=quiz.title,
+                                            id=uuid.uuid4()))
     return scores
