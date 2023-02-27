@@ -1,6 +1,25 @@
-.mainContent{
+
+.mainContent {
     width: 100vw;
     height: 100vh;
     background-color: darkred;
     overflow: hidden;
+}
+
+.header {
+    color: #D3E7E9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.avatar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url("/public/avatar.png");
+    background-size: cover;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
 }

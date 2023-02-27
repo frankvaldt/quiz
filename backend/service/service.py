@@ -128,10 +128,6 @@ async def delete_quiz_group(id_group):
     await delete_quiz(id_group, session)
 
 
-# select u.id_telegram, u.name, u.office_id, s.score
-# from score s join user u on s.id_user=u.id_telegram
-# where office_id=_ order by score desc;
-
 async def get_statistic():
     offices = await get_values_from_query(select(Office))
     result_statistic = []
