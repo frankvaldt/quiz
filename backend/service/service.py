@@ -2,16 +2,19 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from AdminPanel.backend.init import engine
 from AdminPanel.backend.models.QuizGroup import QuizGroup
-from AdminPanel.backend.dto.dto import QuizGroupDto, QuizDto, AnswerDto
+from AdminPanel.backend.dto.dto import QuizGroupDto, QuizDto, AnswerDto, StatisticForOfficeDto, StatisticDto
 from AdminPanel.backend.models.Quiz import Quiz
 from AdminPanel.backend.models.Answer import Answer
 from AdminPanel.backend.models.Score import Score
+from AdminPanel.backend.models.Office import Office
 from sqlalchemy.future import select
 from sqlalchemy import delete, update
 
 from AdminPanel.backend.models.User import User
-
+from sqlalchemy.orm import Bundle
 from flask import jsonify
+
+from AdminPanel.bot.user.utils.utils import get_values_from_query
 
 
 async def update_quiz_group(quiz_group):
@@ -124,11 +127,30 @@ async def delete_quiz_group(id_group):
     await session.execute(delete(QuizGroup).where(QuizGroup.id == id_group))
     await delete_quiz(id_group, session)
 
-# async def get_stat():
-#     session = AsyncSession(engine, expire_on_commit=False)
-#     res = await session.execute(
-#         select(Score).join_from(User).where(Score.id_user == User.id).join_from(QuizGroup).where(
-#             Score.id_quiz_group == QuizGroup.id))
-#     q = res.scalars().all()
-#     for x in q:
-#         print(jsonfy(x))
+
+# select u.id_telegram, u.name, u.office_id, s.score
+# from score s join user u on s.id_user=u.id_telegram
+# where office_id=_ order by score desc;
+
+async def get_statistic():
+    offices = await get_values_from_query(select(Office))
+    result_statistic = []
+    for office in offices:
+        scores = await get_statistic_by_office(office.id)
+        if len(scores) > 0:
+            result_statistic.append(StatisticDto(office=office.name, scores=scores))
+    return result_statistic
+
+
+async def get_statistic_by_office(office_id: str) -> list[StatisticForOfficeDto]:
+    session = AsyncSession(engine, expire_on_commit=False)
+    res = await session.execute(
+        select(Bundle("User", User.id_telegram, User.name), Bundle("Score", Score.score)).join(
+            User, User.id_telegram == Score.id_user).where(User.office_id == office_id))
+    scores = []
+    for x in res:
+        scores.append(StatisticForOfficeDto(telegramId=x.User.id_telegram,
+                                            userName=x.User.name,
+                                            score=x.Score.score,
+                                            time=0))
+    return scores

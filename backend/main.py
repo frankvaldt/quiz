@@ -7,7 +7,7 @@ from flask import Flask, request
 from flask_cors import cross_origin, CORS
 
 from AdminPanel.backend.service.service import add_quiz_group, \
-    get_quizzes_groups, delete_quiz_group, update_quiz_group, get_stat
+    get_quizzes_groups, delete_quiz_group, update_quiz_group, get_statistic
 from AdminPanel.backend.init import init_models
 import logging
 from flask import jsonify
@@ -36,19 +36,15 @@ async def get_quiz_group_http():
     return jsonify(quizzes_groups)
 
 
-# /upload.do
-
 @app.route('/upload.do', methods=['POST'])
 async def get_photo_http():
-    uploaded_img = request.files['image']
-    print(uploaded_img)
-    return 'LOL'
+    return 'picture'
 
 
-@app.route('/getStat', methods=['GET'])
+@app.route('/getStatistic', methods=['GET'])
 async def get_stat_http():
-    a = get_stat()
-    return ''
+    statistic = await get_statistic()
+    return jsonify(statistic)
 
 
 @app.route('/addQuizGroup', methods=['POST'])

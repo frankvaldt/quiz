@@ -25,3 +25,7 @@ export const deleteQuizGroupHttp = (id: string) => {
 export const getQuizGroupHttp = (): Promise<{ data: IQuizGroup[] }> => {
     return axios.get(BASE_URL + 'getQuizGroup');
 }
+
+export const getStatisticHttp = (): Promise<any> => {
+    return axios.get(BASE_URL + 'getStatistic');
+}

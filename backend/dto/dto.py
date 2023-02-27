@@ -24,3 +24,17 @@ class QuizGroupDto:
     title: str
     quiz: list[QuizDto]
     id: str
+
+
+@dataclass
+class StatisticForOfficeDto:
+    telegramId: str
+    userName: str
+    score: int
+    time: int
+
+
+@dataclass
+class StatisticDto:
+    office: str
+    scores: list[StatisticForOfficeDto]
