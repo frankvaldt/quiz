@@ -145,12 +145,13 @@ async def get_statistic():
 async def get_statistic_by_office(office_id: str) -> list[StatisticForOfficeDto]:
     session = AsyncSession(engine, expire_on_commit=False)
     res = await session.execute(
-        select(Bundle("User", User.id_telegram, User.name), Bundle("Score", Score.score)).join(
-            User, User.id_telegram == Score.id_user).where(User.office_id == office_id))
+        select(Bundle("User", User.id_telegram, User.name, User.id), Bundle("Score", Score.score)).join(
+            Score, User.id_telegram == Score.id_user).where(User.office_id == office_id).order_by(Score.score))
     scores = []
     for x in res:
         scores.append(StatisticForOfficeDto(telegramId=x.User.id_telegram,
                                             userName=x.User.name,
                                             score=x.Score.score,
-                                            time=0))
+                                            time=0,
+                                            id=x.User.id))
     return scores

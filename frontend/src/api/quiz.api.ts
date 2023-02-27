@@ -1,4 +1,4 @@
-import {IQuizGroup} from "./quiz.interface";
+import {IQuizGroup, IStatistic} from "./quiz.interface";
 import axios from "axios";
 import {BASE_URL} from "../paths/paths";
 
@@ -26,6 +26,6 @@ export const getQuizGroupHttp = (): Promise<{ data: IQuizGroup[] }> => {
     return axios.get(BASE_URL + 'getQuizGroup');
 }
 
-export const getStatisticHttp = (): Promise<any> => {
+export const getStatisticHttp = (): Promise<{ data: IStatistic[] }> => {
     return axios.get(BASE_URL + 'getStatistic');
 }

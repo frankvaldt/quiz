@@ -1,4 +1,4 @@
-.wrapper{
+.wrapper {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -7,13 +7,19 @@
     row-gap: 30px;
 }
 
-.add_icon{
+.add_icon {
     align-self: end;
     cursor: pointer;
     color: #3A7734;
     transform: scale(1.5);
 }
 
-.main_wrapper{
+.main_wrapper {
+    overflow: scroll;
+    height: 100vh;
+    padding-bottom: 5%;
+}
 
+.table_title {
+    padding-left: 1%;
 }

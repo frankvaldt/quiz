@@ -1,4 +1,4 @@
-export interface IQuizGroup{
+export interface IQuizGroup {
     title: string;
     quiz: IQuiz[];
     id: string;
@@ -13,9 +13,22 @@ export interface IQuiz {
     idQuizGroup: string;
 }
 
-export interface IAnswers{
+export interface IAnswers {
     text: string;
     isCorrect?: boolean;
     id: string;
-    idQuiz:string;
+    idQuiz: string;
+}
+
+export interface IStatisticForOffice {
+    telegramId: string;
+    userName: string;
+    score: number;
+    time: number;
+    id: string;
+}
+
+export interface IStatistic {
+    office: string;
+    scores: IStatisticForOffice[];
 }
