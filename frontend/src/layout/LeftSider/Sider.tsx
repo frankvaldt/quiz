@@ -21,9 +21,10 @@ const items = [{
 
 export const LeftSider = (): JSX.Element => {
     const [collapsed, setCollapsed] = useState<boolean>(true);
-    const [index, setIndex] = useState<string>('0');
     const location = useLocation();
+    const [index, setIndex] = useState<string>(items.findIndex(item => item.url === location.pathname).toString() ?? '0');
     useEffect(() => {
+        const i = items.findIndex(item => item.url === location.pathname).toString();
         setIndex(items.findIndex(item => item.url === location.pathname).toString());
     }, [location.pathname]);
     return (

@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {BrowserRouter, Route, Routes, Navigate, useNavigate} from "react-router-dom";
+import {BrowserRouter, Route, Routes, Navigate, useNavigate, useLocation} from "react-router-dom";
 import RequireAuth from "./RequireAuth";
 import {MainLayout} from "../../layout/MainLayout";
 import {DASHBOARD_PATH, LOGIN, MAIN_CONTENT, QUIZ_RESULT} from "../../paths/paths";
@@ -9,9 +9,16 @@ import {ResultQuiz} from "../../pages/ResultQuiz";
 
 export const MainRouter = (): JSX.Element => {
     const navigate = useNavigate();
+    const location = useLocation();
+
     useEffect(() => {
-        navigate(MAIN_CONTENT)
+        let url = localStorage.getItem('location') ?? MAIN_CONTENT;
+        if (url === '/') url = MAIN_CONTENT;
+        navigate(url)
     }, []);
+    useEffect(() => {
+        localStorage.setItem('location', location.pathname);
+    }, [location.pathname]);
     const protectedLayout = (
         <RequireAuth>
             <MainLayout/>
