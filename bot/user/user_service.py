@@ -1,5 +1,5 @@
 from aiogram.dispatcher import FSMContext
-from aiogram.types import Message, KeyboardButtonPollType, ReplyKeyboardMarkup, ReplyKeyboardRemove
+from aiogram.types import Message, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -12,8 +12,8 @@ from AdminPanel.backend.models.Office import Office
 from AdminPanel.backend.models.User import User
 
 from AdminPanel.bot.user.state.state import UserState
-from AdminPanel.bot.user.utils.utils import get_values_from_query, check_office, get_value_from_query, \
-    get_markup_without_passed
+from AdminPanel.bot.user.utils.utils import get_values_from_query, check_office, get_value_from_query
+from user.utils.markup_utils import get_markup_without_passed
 
 
 async def set_user(message: Message):
