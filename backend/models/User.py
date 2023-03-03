@@ -3,6 +3,7 @@ import uuid
 from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from AdminPanel.backend.models.Score import Score
+from AdminPanel.backend.models.ScoreTime import ScoreTime
 
 from init import Base
 
@@ -14,4 +15,6 @@ class User(Base):
     id_telegram = Column(Integer)
     name = Column(String)
     office_id = Column(Integer, ForeignKey("Office.id"))
+    scoreTime = relationship("ScoreTime")
     children = relationship("Score")
+

@@ -84,5 +84,5 @@ def db_init_models():
 if __name__ == '__main__':
     if __package__ is None:
         sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-    app.run(debug=True)
-    # cli()
+    # app.run(debug=True)
+    cli()

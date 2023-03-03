@@ -8,15 +8,16 @@ from sqlalchemy import update
 
 async def change_score(quiz_group_query, answer_query, user_id):
     session = AsyncSession(engine, expire_on_commit=False)
-    await get_or_create_score(session, Score, id_user=user_id, id_quiz_group=quiz_group_query.id)
+    await get_or_create_score(session, id_user=user_id, id_quiz_group=quiz_group_query.id)
     await session.execute(
         update(Score).where(Score.id_user == user_id, Score.id_quiz_group == quiz_group_query.id).values(
             score=Score.score + answer_query.correct))
     await session.commit()
+    await session.close()
 
 
-async def get_or_create_score(session, model, id_user, id_quiz_group):
-    instance = await session.execute(select(model).filter_by(id_user=id_user, id_quiz_group=id_quiz_group))
+async def get_or_create_score(session, id_user, id_quiz_group):
+    instance = await session.execute(select(Score).filter_by(id_user=id_user, id_quiz_group=id_quiz_group))
     instance = instance.scalars().first()
     if not instance:
         instance = Score(id_user=id_user, id_quiz_group=id_quiz_group, score=0)

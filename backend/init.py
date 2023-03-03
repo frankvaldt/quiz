@@ -26,6 +26,7 @@ async def init_models():
         import AdminPanel.backend.models.User
         import AdminPanel.backend.models.Office
         import AdminPanel.backend.models.Score
+        import AdminPanel.backend.models.ScoreTime
 
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
