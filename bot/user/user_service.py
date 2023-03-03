@@ -11,9 +11,9 @@ import aiogram.utils.markdown as md
 from AdminPanel.backend.models.Office import Office
 from AdminPanel.backend.models.User import User
 
-from AdminPanel.bot.user.state.state import UserState, QuizGroupState
-from AdminPanel.bot.user.quiz_service import markup_quiz_group, get_markup_without_passed
-from AdminPanel.bot.user.utils.utils import get_values_from_query, check_office, get_value_from_query
+from AdminPanel.bot.user.state.state import UserState
+from AdminPanel.bot.user.utils.utils import get_values_from_query, check_office, get_value_from_query, \
+    get_markup_without_passed
 
 
 async def set_user(message: Message):
@@ -73,6 +73,7 @@ async def start_quiz(message: types.Message):
     markup = await get_markup_without_passed(message.from_user.id)
     if len(markup.values['inline_keyboard']) > 0:
         await message.answer('Начнем наш квиз! Выберите викторину: ', reply_markup=markup)
-        await message.answer(reply_markup=ReplyKeyboardRemove(), text='Ps. Подумай перед ответом!')
+        text = 'Ps. Подумай перед ответом!'
     else:
-        await message.answer(reply_markup=ReplyKeyboardRemove(), text='Все викторины пройдены. Ждите результатов!')
+        text = 'Все викторины пройдены. Ждите результатов!'
+    await message.answer(reply_markup=ReplyKeyboardRemove(), text=text)

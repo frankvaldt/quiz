@@ -32,3 +32,13 @@ async def check_quiz_group(message: Message) -> bool:
     quizzes_groups = await get_values_from_query(select(QuizGroup))
     quizzes_groups_titles = [x.title for x in quizzes_groups]
     return message.text not in quizzes_groups_titles
+
+
+def get_index_of_quiz(all_quizzes, quiz_query_id):
+    index = -1
+    for index, item in enumerate(all_quizzes):
+        if item.id == quiz_query_id:
+            break
+        else:
+            index = -1
+    return index

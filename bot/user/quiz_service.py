@@ -1,50 +1,24 @@
 from aiogram.dispatcher import FSMContext
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButtonPollType, CallbackQuery
-from aiogram.utils.callback_data import CallbackData
+from aiogram.types import CallbackQuery
 from AdminPanel.backend.models.QuizGroup import QuizGroup
 from AdminPanel.backend.models.Quiz import Quiz
-from AdminPanel.backend.models.Score import Score
+
 from AdminPanel.backend.models.Answer import Answer
 
-from sqlalchemy.ext.asyncio import AsyncSession
-from AdminPanel.bot.init_bot import dp, bot, engine
+from AdminPanel.bot.user.utils.utils import get_index_of_quiz
+
+from AdminPanel.bot.init_bot import dp, bot
 from sqlalchemy.future import select
-from sqlalchemy import update
-import base64, io
+
+import base64
 from aiogram import types
 
 from AdminPanel.bot.user.state.state import QuizGroupState
+from AdminPanel.bot.user.utils.score_utils import change_score
 from AdminPanel.bot.user.utils.utils import get_values_from_query, \
     check_quiz_group, get_value_from_query
-
-myCallBack = CallbackData("my", "curr_id")
-quizGroupCallBack = CallbackData("qiz", "quiz_group_id")
-answerCallBack = CallbackData("answer", "id")
-
-
-async def markup_quiz_group():
-    quizzes_groups = await get_values_from_query(select(QuizGroup))
-    markup = InlineKeyboardMarkup(one_time_keyboard=True)
-    for quiz_group in quizzes_groups:
-        markup.add(
-            InlineKeyboardButton(quiz_group.title, callback_data=quizGroupCallBack.new(quiz_group_id=quiz_group.id),
-                                 request_poll=KeyboardButtonPollType()))
-    return markup
-
-
-async def get_markup_without_passed(user_id):
-    scores = await get_values_from_query(select(Score).where(Score.id_user == user_id))
-    select_groups = select(QuizGroup)
-    for score in scores:
-        select_groups = select_groups.where(QuizGroup.id != score.id_quiz_group)
-    quizzes_groups = await get_values_from_query(select_groups)
-    markup = InlineKeyboardMarkup(one_time_keyboard=True)
-    for quiz_group in quizzes_groups:
-        markup.add(
-            InlineKeyboardButton(quiz_group.title,
-                                 callback_data=quizGroupCallBack.new(quiz_group_id=quiz_group.id),
-                                 request_poll=KeyboardButtonPollType()))
-    return markup
+from user.utils.markup_utils import set_answer_markup, get_markup_without_passed, quizGroupCallBack, myCallBack, \
+    generate_answers_buttons
 
 
 @dp.message_handler(check_quiz_group, state=QuizGroupState.title)
@@ -66,16 +40,6 @@ async def set_quiz_group(message: types.Message, state: FSMContext):
     await QuizGroupState.title.set()
 
 
-async def generate_answers_buttons(quiz):
-    markup = InlineKeyboardMarkup(one_time_keyboard=True)
-    answers = await get_values_from_query(select(Answer).where(Answer.id_Quiz == quiz.id))
-    for elem in answers:
-        markup.add(InlineKeyboardButton(elem.text,
-                                        callback_data=myCallBack.new(curr_id=elem.id),
-                                        request_poll=KeyboardButtonPollType()))
-    return markup
-
-
 @dp.callback_query_handler(quizGroupCallBack.filter())
 async def quiz_group_handler(query: CallbackQuery, callback_data: dict):
     await query.message.delete()
@@ -85,48 +49,10 @@ async def quiz_group_handler(query: CallbackQuery, callback_data: dict):
     await send_quiz_to_user(quizzes[0], query)
 
 
-async def send_quiz_to_user(quiz, query):
-    img = base64.b64decode(quiz.image.split(',')[1])
-    try:
-        if img:
-            await bot.send_photo(query.from_user.id, img)
-            # await bot.delete_message(query.from_user.id, query.message.message_id)
-    finally:
-        markup = await generate_answers_buttons(quiz)
-        await query.message.answer(text=quiz.question,
-                                   reply_markup=markup)
-
-
-async def change_sent_quiz_to_user(quiz, query, chat_id, message_id):
-    markup = await generate_answers_buttons(quiz)
-    img = base64.b64decode(quiz.image.split(',')[1])
-    try:
-        if img:
-            # await bot.send_photo(query.from_user.id, img)
-            await bot.edit_message_media(
-                media=types.input_media.InputMediaPhoto(
-                    io.BytesIO(base64.decodebytes(bytes(quiz.image.split(',')[1], "utf-8")))),
-                chat_id=chat_id,
-                message_id=message_id)
-    finally:
-        await query.message.edit_text(text=quiz.question)
-        await bot.edit_message_reply_markup(chat_id, message_id, reply_markup=markup)
-
-
-async def set_answer_mockup(text):
-    markup = InlineKeyboardMarkup(one_time_keyboard=True)
-    txt = "Ваш ответ: " + text
-    markup.add(
-        InlineKeyboardButton(txt, callback_data=answerCallBack.new(id='x'), request_poll=KeyboardButtonPollType()))
-    return markup
-
-
 @dp.callback_query_handler(myCallBack.filter())
 async def answer(query: CallbackQuery, callback_data: dict):
     curr_id = callback_data.get("curr_id")
     user_id = query["from"].id
-    chat_id = query.message.chat.id
-    message_id = query.message.message_id
 
     answer_query = await get_value_from_query(select(Answer).where(Answer.id == curr_id))
     quiz_query = await get_value_from_query(select(Quiz).where(Quiz.id == answer_query.id_Quiz))
@@ -136,7 +62,12 @@ async def answer(query: CallbackQuery, callback_data: dict):
 
     await change_score(quiz_group_query, answer_query, user_id)
     index = get_index_of_quiz(all_quizzes, quiz_query.id)
+    await change_quiz_by_index(index, all_quizzes, user_id, answer_query, query)
 
+
+async def change_quiz_by_index(index, all_quizzes, user_id, answer_query, query):
+    chat_id = query.message.chat.id
+    message_id = query.message.message_id
     if index + 1 >= len(all_quizzes):
         markup = await get_markup_without_passed(user_id)
         await save_answer(query, answer_query.text, chat_id, message_id)
@@ -152,33 +83,16 @@ async def answer(query: CallbackQuery, callback_data: dict):
 
 async def save_answer(query, text, chat_id, message_id):
     await query.message.edit_text(text="Ваш ответ сохранен")
-    mk = await set_answer_mockup(text)
+    mk = await set_answer_markup(text)
     await bot.edit_message_reply_markup(chat_id, message_id, reply_markup=mk)
 
 
-def get_index_of_quiz(all_quizzes, quiz_query_id):
-    index = -1
-    for index, item in enumerate(all_quizzes):
-        if item.id == quiz_query_id:
-            break
-        else:
-            index = -1
-    return index
-
-
-async def change_score(quiz_group_query, answer_query, user_id):
-    session = AsyncSession(engine, expire_on_commit=False)
-    await get_or_create_score(session, Score, id_user=user_id, id_quiz_group=quiz_group_query.id)
-    await session.execute(
-        update(Score).where(Score.id_user == user_id, Score.id_quiz_group == quiz_group_query.id).values(
-            score=Score.score + answer_query.correct))
-    await session.commit()
-
-
-async def get_or_create_score(session, model, id_user, id_quiz_group):
-    instance = await session.execute(select(model).filter_by(id_user=id_user, id_quiz_group=id_quiz_group))
-    instance = instance.scalars().first()
-    if not instance:
-        instance = Score(id_user=id_user, id_quiz_group=id_quiz_group, score=0)
-        session.add(instance)
-        await session.commit()
+async def send_quiz_to_user(quiz, query):
+    img = base64.b64decode(quiz.image.split(',')[1])
+    try:
+        if img:
+            await bot.send_photo(query.from_user.id, img)
+    finally:
+        markup = await generate_answers_buttons(quiz)
+        await query.message.answer(text=quiz.question,
+                                   reply_markup=markup)
