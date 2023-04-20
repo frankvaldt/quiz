@@ -28,3 +28,10 @@ Note: you should create a database **before** running bot
 ## Rinning frontend
 To start up frontend of admin panel go to **./frontend folder**
 and type in console `npm i` and `npm start`
+
+## Final result in telegram bot
+<img width="322" alt="Screenshot 2023-02-22 at 01 11 44" src="https://user-images.githubusercontent.com/70114083/233397487-41bb7c1c-5022-45ca-88df-14f10361119d.png">
+<img width="313" alt="image" src="https://user-images.githubusercontent.com/70114083/233397782-dce302dd-623d-4dd7-b8d2-8bc6e4297cde.png">
+<img width="448" alt="image" src="https://user-images.githubusercontent.com/70114083/233397865-22fd80f6-fe49-46b6-9c87-5e75c05a3d41.png">
+
+
