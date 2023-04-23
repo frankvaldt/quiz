@@ -17,14 +17,12 @@ logging.basicConfig(level=logging.INFO)
 sys.path.append(getcwd())
 cli = typer.Typer()
 app = Flask(__name__)
-app.config['CORS_HEADERS'] = 'Content-Type'
 
-CORS(app, resources={r"*": {"origins": "*"}})
+CORS(app, support_credentials=True)
 logging.getLogger('flask_cors').level = logging.DEBUG
 
 
 @app.route("/")
-@cross_origin()
 async def hello1():
     return "API v1.0"
 
@@ -84,5 +82,5 @@ def db_init_models():
 if __name__ == '__main__':
     if __package__ is None:
         sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-    # app.run(debug=True)
-    cli()
+    app.run(debug=True)
+    # cli()

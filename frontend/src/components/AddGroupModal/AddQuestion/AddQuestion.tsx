@@ -1,4 +1,4 @@
-import React, {ChangeEvent, Dispatch, SetStateAction, useCallback, useState} from "react";
+import React, {ChangeEvent, useCallback, useState} from "react";
 import {Card, Form, Input, InputNumber, Upload, UploadFile, UploadProps} from "antd";
 import css from "../../Modal/ModalQuiz.module.css";
 import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
@@ -23,7 +23,6 @@ export const AddQuestion = (props: {
     const [loading, setLoading] = useState(false);
     const [input, setInput] = useState<string>(quizElem.question ?? '');
     const [inputNumber, setInputNumber] = useState<number>(quizElem.timer ?? 0);
-    const [imageUrl, setImageUrl] = useState<string>();
     const img = quizElem.img ?? '';
     const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
         if (info.file.status === 'uploading') {
@@ -34,7 +33,6 @@ export const AddQuestion = (props: {
             // Get this url from response in real world.
             getBase64(info.file.originFileObj as RcFile, url => {
                 setLoading(false);
-                setImageUrl(url);
                 updateProduct(draft => {
                     const index = draft.quiz.findIndex(elem => elem.id === quizElem.id);
                     if (index === -1) return;
@@ -57,14 +55,14 @@ export const AddQuestion = (props: {
             if (index === -1) return;
             draft.quiz[index].question = input;
         });
-    }, [input]);
+    }, [input, quizElem.id, updateProduct]);
     const onBlurInputNumber = useCallback(() => {
         updateProduct(draft => {
             const index = draft.quiz.findIndex(elem => elem.id === quizElem.id);
             if (index === -1) return;
             draft.quiz[index].timer = inputNumber;
         });
-    }, [inputNumber]);
+    }, [inputNumber, quizElem.id, updateProduct]);
     return (
         <Card className={css.question_wrapper}>
             <Form layout="horizontal">

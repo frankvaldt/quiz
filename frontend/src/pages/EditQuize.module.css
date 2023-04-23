@@ -7,11 +7,13 @@
     row-gap: 30px;
 }
 
+.create_button{
+    margin-right: 10%;
+}
+
 .add_icon {
     align-self: end;
     cursor: pointer;
-    color: #3A7734;
-    transform: scale(1.5);
 }
 
 .main_wrapper {

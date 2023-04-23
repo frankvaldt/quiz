@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {IQuiz, IQuizGroup} from "../../api/quiz.interface";
 import {getQuizGroupHttp} from "../../api/quiz.api";
+import _ from 'lodash';
 
 export interface quizGrop {
     quizGrop: IQuizGroup[];
@@ -40,7 +41,9 @@ const quizGropSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(getQuizGroupsFromRequest.fulfilled, (state, action) => {
-            state.quizGrop = action.payload;
+            if(!_.isEqual(state.quizGrop, action.payload)){
+                state.quizGrop = action.payload;
+            }
         });
     },
 })

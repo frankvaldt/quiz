@@ -27,6 +27,20 @@
     transform: scale(1.5);
 }
 
+.button{
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.create_a_question{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .button_wrapper {
     display: flex;
     align-items: center;

@@ -7,7 +7,7 @@ import {DeleteOutlined} from "@ant-design/icons";
 import css from './ModalQuiz.module.css';
 import {IQuizGroup} from "../../api/quiz.interface";
 import {useImmer} from "use-immer";
-import {getQuizGroupHttp, updateQuizGroup} from "../../api/quiz.api";
+import {updateQuizGroup} from "../../api/quiz.api";
 import {getQuizGroupsFromRequest} from "../../store/slices/quizGropSlice";
 import {useAppDispatch} from "../../hooks/reduxHooks";
 
@@ -45,7 +45,7 @@ export const ModalQuiz = (props: {
     return (
         <>
             <div className={css.button_wrapper}>
-                <Button type="primary" onClick={showModal}>
+                <Button type="primary" className={css.button} onClick={showModal}>
                     {product.title}
                 </Button>
                 <DeleteOutlined onClick={deleteHandler} className={css.remove}/>
