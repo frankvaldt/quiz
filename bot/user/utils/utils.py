@@ -2,10 +2,10 @@ from sqlalchemy import Select
 from sqlalchemy.ext.asyncio import AsyncSession
 from aiogram.types import Message
 from sqlalchemy.future import select
-from AdminPanel.bot.init_bot import engine
+from bot.init_bot import engine
 
-from AdminPanel.backend.models.Office import Office
-from AdminPanel.backend.models.QuizGroup import QuizGroup
+from backend.models.Office import Office
+from backend.models.QuizGroup import QuizGroup
 
 
 async def get_values_from_query(query: Select):

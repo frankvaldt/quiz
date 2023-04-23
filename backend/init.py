@@ -20,13 +20,13 @@ async_session = sessionmaker(
 
 async def init_models():
     async with engine.begin() as conn:
-        import AdminPanel.backend.models.QuizGroup
-        import AdminPanel.backend.models.Quiz
-        import AdminPanel.backend.models.Answer
-        import AdminPanel.backend.models.User
-        import AdminPanel.backend.models.Office
-        import AdminPanel.backend.models.Score
-        import AdminPanel.backend.models.ScoreTime
+        import backend.models.QuizGroup
+        import backend.models.Quiz
+        import backend.models.Answer
+        import backend.models.User
+        import backend.models.Office
+        import backend.models.Score
+        import backend.models.ScoreTime
 
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)

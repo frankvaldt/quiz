@@ -1,22 +1,22 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from AdminPanel.backend.init import engine
-from AdminPanel.backend.models.QuizGroup import QuizGroup
-from AdminPanel.backend.dto.dto import QuizGroupDto, QuizDto, AnswerDto, StatisticForOfficeDto, StatisticDto
-from AdminPanel.backend.models.Quiz import Quiz
-from AdminPanel.backend.models.Answer import Answer
-from AdminPanel.backend.models.Score import Score
-from AdminPanel.backend.models.Office import Office
+from backend.init import engine
+from backend.models.QuizGroup import QuizGroup
+from backend.dto.dto import QuizGroupDto, QuizDto, AnswerDto, StatisticForOfficeDto, StatisticDto
+from backend.models.Quiz import Quiz
+from backend.models.Answer import Answer
+from backend.models.Score import Score
+from backend.models.Office import Office
 from sqlalchemy.future import select
 from sqlalchemy import delete, update
 
-from AdminPanel.backend.models.User import User
+from backend.models.User import User
 from sqlalchemy.orm import Bundle
 import uuid
 
 from flask import jsonify
 
-from AdminPanel.bot.user.utils.utils import get_values_from_query, get_value_from_query
+from bot.user.utils.utils import get_values_from_query, get_value_from_query
 
 
 async def update_quiz_group(quiz_group):

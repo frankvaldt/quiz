@@ -2,10 +2,10 @@ import uuid
 
 from sqlalchemy import Column, String, Text
 from sqlalchemy.orm import relationship
-from AdminPanel.backend.models.Score import Score
-from AdminPanel.backend.models.Quiz import Quiz
+from backend.models.Score import Score
+from backend.models.Quiz import Quiz
 
-from init import Base
+from backend.init import Base
 
 
 class QuizGroup(Base):

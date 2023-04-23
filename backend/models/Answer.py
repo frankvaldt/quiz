@@ -1,7 +1,7 @@
 import uuid
 
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Text
-from init import Base
+from backend.init import Base
 
 
 class Answer(Base):

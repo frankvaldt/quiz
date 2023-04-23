@@ -10,7 +10,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine
 import os
 
-from AdminPanel.bot.config import API_TOKEN
+from bot.config import API_TOKEN
 
 logging.basicConfig(level=logging.INFO)
 

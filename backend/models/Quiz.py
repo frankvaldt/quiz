@@ -3,9 +3,9 @@ import uuid
 from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from sqlalchemy.orm import relationship
 
-from AdminPanel.backend.models.Answer import Answer
+from backend.models.Answer import Answer
 
-from init import Base
+from backend.init import Base
 
 
 class Quiz(Base):

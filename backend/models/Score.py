@@ -1,7 +1,7 @@
 import uuid
 
 from sqlalchemy import Column, Integer, ForeignKey, Text
-from init import Base
+from backend.init import Base
 
 
 class Score(Base):

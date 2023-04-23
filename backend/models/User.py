@@ -2,10 +2,10 @@ import uuid
 
 from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from sqlalchemy.orm import relationship
-from AdminPanel.backend.models.Score import Score
-from AdminPanel.backend.models.ScoreTime import ScoreTime
+from backend.models.Score import Score
+from backend.models.ScoreTime import ScoreTime
 
-from init import Base
+from backend.init import Base
 
 
 class User(Base):

@@ -2,9 +2,9 @@ import uuid
 
 from sqlalchemy import Column, Integer, String, Text
 from sqlalchemy.orm import relationship
-from AdminPanel.backend.models.User import User
+from backend.models.User import User
 
-from init import Base
+from backend.init import Base
 
 
 class Office(Base):
